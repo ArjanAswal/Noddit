@@ -6,6 +6,8 @@ const {
   deleteDocument,
   upvoteDocument,
   downvoteDocument,
+  removeUpvote,
+  removeDownvote,
 } = require('../controllers/handlerFactory');
 
 exports.getComments = getDocuments(Comment);
@@ -19,3 +21,7 @@ exports.deleteComment = deleteDocument(Comment);
 exports.upvoteComment = upvoteDocument(Comment);
 
 exports.downvoteComment = downvoteDocument(Comment);
+
+exports.removeUpvote = removeUpvote(Comment);
+
+exports.removeDownvote = removeDownvote(Comment);

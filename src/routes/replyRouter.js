@@ -21,16 +21,24 @@ router
 
 router
   .route('/:id/upvote')
-  .patch(
+  .post(
     passport.authenticate('jwt', { session: false }),
     replyController.upvoteReply
+  )
+  .delete(
+    passport.authenticate('jwt', { session: false }),
+    replyController.removeUpvote
   );
 
 router
   .route('/:id/downvote')
-  .patch(
+  .post(
     passport.authenticate('jwt', { session: false }),
     replyController.downvoteReply
+  )
+  .delete(
+    passport.authenticate('jwt', { session: false }),
+    replyController.removeDownvote
   );
 
 module.exports = router;
