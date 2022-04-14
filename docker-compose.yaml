@@ -23,7 +23,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./data:/data/db
+      - data:/data/db
     healthcheck:
       test: "[ `echo 'db.runCommand(\"ping\").ok' | mongo localhost/noddit --quiet` ] && echo 0 || echo 1"
       interval: 5s
