@@ -2,10 +2,12 @@
   "env": {
     "commonjs": true,
     "es2021": true,
-    "node": true
+    "node": true,
+    "jest/globals": true
   },
   "rules": {
-    "no-unused-vars": ["error", { "args": "none" }]
+    "no-unused-vars": ["error", { "args": "none" }],
+    "node/no-unpublished-require": 0
   },
   "plugins": ["jest", "security", "prettier"],
   "extends": [
