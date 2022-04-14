@@ -7,6 +7,8 @@ require('express-async-errors');
 const healthcheckRouter = require('./routes/healthcheckRouter');
 const userRouter = require('./routes/userRouter');
 const postRouter = require('./routes/postRouter');
+const commentRouter = require('./routes/commentRouter');
+
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
@@ -38,6 +40,7 @@ app.use(mongoSanitize());
 // Routes
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/posts', postRouter);
+app.use('/api/v1/comments', commentRouter);
 
 app.use('/healthz', healthcheckRouter);
 
