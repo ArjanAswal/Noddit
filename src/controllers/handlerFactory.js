@@ -7,7 +7,7 @@ const Comment = require('./../models/commentModel');
 const Reply = require('./../models/replyModel');
 const User = require('./../models/userModel');
 
-exports.getDocuments = Model => async (req, res) => {
+exports.getDocuments = Model => async (req, res, next) => {
   const features = new APIFeatures(Model.find(), req.query)
     .filter()
     .sort()
@@ -28,7 +28,7 @@ exports.getDocuments = Model => async (req, res) => {
   });
 };
 
-exports.getDocument = Model => async (req, res) => {
+exports.getDocument = Model => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
 
   if (!document) {
@@ -43,7 +43,7 @@ exports.getDocument = Model => async (req, res) => {
   });
 };
 
-exports.createDocument = Model => async (req, res) => {
+exports.createDocument = Model => async (req, res, next) => {
   const { title, description, mediaURLs, content, post, comment, community } =
     req.body;
   let parent;
@@ -62,7 +62,7 @@ exports.createDocument = Model => async (req, res) => {
   if (Model.modelName === 'Comment') {
     parent = await Post.findById(post);
     if (!parent) throw new Error("Post doesn't exist");
-    document = Model.build({
+    document = await Model.create({
       creator: user.id,
       post,
       content,
@@ -72,13 +72,13 @@ exports.createDocument = Model => async (req, res) => {
       (await Comment.findById(comment)) ?? (await Reply.findById(comment)); // nesting of replies
 
     if (!parent) throw new Error("Comment doesn't exist");
-    document = Model.build({
+    document = await Model.create({
       creator: user.id,
       comment,
       content,
     });
   } else if (Model.modelName === 'Post') {
-    document = Model.build({
+    document = await Model.create({
       creator: user.id,
       title,
       description,
@@ -89,8 +89,6 @@ exports.createDocument = Model => async (req, res) => {
     throw new Error('Invalid model name');
   }
 
-  await document.save();
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -99,7 +97,7 @@ exports.createDocument = Model => async (req, res) => {
   });
 };
 
-exports.deleteDocument = Model => async (req, res) => {
+exports.deleteDocument = Model => async (req, res, next) => {
   const user = req.user;
 
   const document = await Model.findById(req.params.id);
@@ -128,7 +126,7 @@ exports.deleteDocument = Model => async (req, res) => {
   });
 };
 
-exports.upvoteDocument = Model => async (req, res) => {
+exports.upvoteDocument = Model => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
   const user = req.user;
 
@@ -180,7 +178,7 @@ exports.upvoteDocument = Model => async (req, res) => {
   });
 };
 
-exports.downvoteDocument = Model => async (req, res) => {
+exports.downvoteDocument = Model => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
   const user = req.user;
 
