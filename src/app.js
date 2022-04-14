@@ -1,13 +1,20 @@
 const express = require('express');
 const helmet = require('helmet');
+const passport = require('passport');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 require('express-async-errors');
 const healthcheckRouter = require('./routes/healthcheckRouter');
+const userRouter = require('./routes/userRouter');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
+// Side effect import
+require('./controllers/passportController');
+
 const app = express();
+
+app.use(passport.initialize());
 
 // Global Middlewares
 // Set security HTTP headers
@@ -28,6 +35,7 @@ app.use(express.json({ limit: '10kb' }));
 app.use(mongoSanitize());
 
 // Routes
+app.use('/api/v1/users', userRouter);
 app.use('/healthz', healthcheckRouter);
 
 app.all('*', req => {
