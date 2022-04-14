@@ -51,17 +51,17 @@ const communitySchema = new Schema({
 });
 
 communitySchema.pre(/^find/, function (next) {
-  //   this.populate({
-  //     path: 'creator',
-  //     select:
-  //       '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments -upvotedReplies -downvotedReplies',
-  //   });
+  this.populate({
+    path: 'creator',
+    select:
+      '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments -upvotedReplies -downvotedReplies',
+  });
 
-  //   this.populate({
-  //     path: 'moderators',
-  //     select:
-  //       '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments -upvotedReplies -downvotedReplies',
-  //   });
+  this.populate({
+    path: 'moderators',
+    select:
+      '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments -upvotedReplies -downvotedReplies',
+  });
 
   next();
 });

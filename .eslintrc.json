@@ -4,6 +4,9 @@
     "es2021": true,
     "node": true
   },
+  "rules": {
+    "no-unused-vars": ["error", { "args": "none" }]
+  },
   "plugins": ["jest", "security", "prettier"],
   "extends": [
     "eslint:recommended",
@@ -12,6 +15,5 @@
   ],
   "parserOptions": {
     "ecmaVersion": "latest"
-  },
-  "rules": {}
+  }
 }
