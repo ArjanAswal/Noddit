@@ -16,4 +16,4 @@ const logConfiguration = {
   transports: [new winston.transports.Console()],
 };
 
-exports.default = winston.createLogger(logConfiguration);
+module.exports = winston.createLogger(logConfiguration);
