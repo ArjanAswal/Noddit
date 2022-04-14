@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 require('express-async-errors');
 const User = require('../models/userModel');
 const Email = require('../utils/email');
+const AppError = require('../utils/appError');
 
 const signToken = id => {
   return jwt.sign({ id }, process.env.JWT_SECRET ?? 'secret', {
@@ -37,6 +38,12 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.signup = async (req, res) => {
   const { username, email, password } = req.body;
+  if (username.match(/^\w+$/) === null) {
+    throw new AppError(
+      'Username can only contain letters, numbers and underscores',
+      400
+    );
+  }
   const newUser = await User.create({ username, email, password });
 
   const url = `${req.protocol}://${req.get('host')}/me`;

@@ -1,10 +1,42 @@
 const sendErrorDev = (err, res) => {
-  res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack,
-  });
+  switch (err.name) {
+    case 'CastError':
+      res.status(404).json({
+        status: err.status,
+        message: 'Resource not found',
+      });
+      break;
+
+    case 'ValidationError':
+      res.status(400).json({
+        status: err.status,
+        message: 'Invalid data',
+      });
+      break;
+
+    case 'JsonWebTokenError':
+      res.status(401).json({
+        status: err.status,
+        message: 'Invalid token',
+      });
+      break;
+
+    case 'TokenExpiredError':
+      res.status(401).json({
+        status: err.status,
+        message: 'Token expired',
+      });
+      break;
+
+    default:
+      res.status(err.statusCode).json({
+        status: err.status,
+        error: err,
+        message: err.message,
+        stack: err.stack,
+      });
+      break;
+  }
 };
 
 const sendErrorProd = (err, res) => {

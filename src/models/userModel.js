@@ -7,17 +7,24 @@ const userSchema = new Schema({
     type: String,
     required: [true, 'Please tell us your username!'],
     unique: true,
+    trim: true,
+    lowercase: true,
+    minlength: [3, 'Username must be at least 3 characters long!'],
+    maxlength: [15, 'Username must be at most 15 characters long!'],
   },
   email: {
     type: String,
     required: [true, 'Please provide your email'],
     unique: true,
+    trim: true,
     lowercase: true,
     validate: [validator.isEmail, 'Please provide a valid email'],
   },
   about: {
     type: String,
     default: '',
+    trim: true,
+    maxlength: [200, 'About must be at most 200 characters long!'],
   },
   role: {
     type: String,
@@ -28,7 +35,7 @@ const userSchema = new Schema({
   password: {
     type: String,
     required: [true, 'Please provide a password'],
-    minlength: 8,
+    minlength: 6,
     select: false,
   },
   passwordChangedAt: Date,

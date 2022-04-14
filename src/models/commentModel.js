@@ -14,6 +14,8 @@ const commentSchema = new Schema({
   content: {
     type: String,
     required: [true, 'content cannot be empty!'],
+    trim: true,
+    maxlength: [1000, 'content cannot be longer than 1000 characters!'],
   },
   score: {
     type: Number,

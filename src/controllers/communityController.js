@@ -21,6 +21,13 @@ exports.createCommunity = async (req, res, next) => {
     postFlairs,
   } = req.body;
 
+  if (name.match(/^\w+$/) === null) {
+    throw new AppError(
+      'Community name can only contain letters, numbers and underscores',
+      400
+    );
+  }
+
   const user = req.user;
 
   const subCreatorDoc = await User.findById(user.id).select('karma');

@@ -10,6 +10,10 @@ const communitySchema = new Schema({
     type: String,
     required: [true, 'Community must have a name!'],
     unique: true,
+    trim: true,
+    lowercase: true,
+    minlength: [3, 'Community name must be at least 3 characters long!'],
+    maxlength: [25, 'Community name must be at most 25 characters long!'],
   },
   moderators: {
     type: [Schema.Types.ObjectId],

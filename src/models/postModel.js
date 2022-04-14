@@ -9,6 +9,8 @@ const postSchema = new Schema({
   title: {
     type: String,
     required: [true, 'Title cannot be empty!'],
+    trim: true,
+    maxlength: [50, 'Title cannot be longer than 50 characters!'],
   },
   community: {
     type: Schema.Types.ObjectId,
@@ -17,6 +19,8 @@ const postSchema = new Schema({
   },
   description: {
     type: String,
+    trim: true,
+    maxlength: [1000, 'Description cannot be longer than 1000 characters!'],
   },
   mediaURLs: [String],
   score: {
