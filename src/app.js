@@ -4,6 +4,8 @@ const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 require('express-async-errors');
 const healthcheckRouter = require('./routes/healthcheckRouter');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
@@ -27,5 +29,11 @@ app.use(mongoSanitize());
 
 // Routes
 app.use('/healthz', healthcheckRouter);
+
+app.all('*', req => {
+  throw new AppError(`Can't find ${req.originalUrl} on this server!`, 404);
+});
+
+app.use(globalErrorHandler);
 
 module.exports = app;

@@ -2,6 +2,9 @@
   "name": "noddit",
   "version": "1.0.0",
   "description": "A Reddit clone implemented in Node.js",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "main": "./src/server.js",
   "scripts": {
     "start": "nodemon ./src/server.js",
