@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const postSchema = new Schema({
   creator: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'Post must belong to a creator!'],
   },
@@ -11,7 +11,7 @@ const postSchema = new Schema({
     required: [true, 'Title cannot be empty!'],
   },
   community: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Community',
     required: [true, 'Post must belong to a community!'],
   },

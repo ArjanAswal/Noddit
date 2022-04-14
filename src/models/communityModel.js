@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const communitySchema = new Schema({
   creator: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'Community must belong to a creator!'],
   },
@@ -12,12 +12,12 @@ const communitySchema = new Schema({
     unique: true,
   },
   moderators: {
-    type: [mongoose.Schema.Types.ObjectId],
+    type: [Schema.Types.ObjectId],
     ref: 'User',
     default: [],
   },
   bannedUsers: {
-    type: [mongoose.Schema.Types.ObjectId],
+    type: [Schema.Types.ObjectId],
     ref: 'User',
     default: [],
   },

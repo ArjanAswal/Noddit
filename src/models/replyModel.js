@@ -2,12 +2,12 @@ const { Schema, model } = require('mongoose');
 
 const replySchema = new Schema({
   creator: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'Reply must belong to a creator!'],
   },
   comment: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Comment',
     required: [true, 'Reply must belong to a comment!'],
   },
