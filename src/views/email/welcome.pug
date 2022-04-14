@@ -1,0 +1,17 @@
+extends baseEmail
+
+block content
+  p Hi #{username},
+  p Welcome to Noddit, we're glad to have you 🎉🙏
+  p Noddit is a home to amazing communities. We are thrilled to have you on board!
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Go to homepage
+  p If you need any help with using this API, please don't hesitate to contact me!
+  p - Arjan Aswal, Node.js Developer
