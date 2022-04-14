@@ -1,0 +1,56 @@
+{
+  "name": "noddit",
+  "version": "1.0.0",
+  "description": "A Reddit clone implemented in Node.js",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "nodemon ./src/server.js",
+    "test": "jest watch --runInBand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ArjanAswal/Noddit.git"
+  },
+  "keywords": [
+    "Noddit"
+  ],
+  "author": "Arjan Aswal",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ArjanAswal/Noddit/issues"
+  },
+  "homepage": "https://github.com/ArjanAswal/Noddit#readme",
+  "dependencies": {
+    "axios": "^0.26.1",
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "express-async-errors": "^3.1.1",
+    "express-mongo-sanitize": "^2.2.0",
+    "express-rate-limit": "^6.3.0",
+    "helmet": "^5.0.2",
+    "html-to-text": "^8.2.0",
+    "jsonschema": "^1.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.2.11",
+    "nodemailer": "^6.7.3",
+    "passport": "^0.5.2",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "pug": "^3.0.2",
+    "validator": "^13.7.0",
+    "winston": "^3.7.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-jest": "^26.1.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-security": "^1.4.0",
+    "jest": "^27.5.1",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.2.2"
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+.env
+.aws
+.npmrc
+Dockerfile
+.git
+.gitignore
+docker-compose.yml
+docker-compose.yaml

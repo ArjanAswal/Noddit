@@ -1,0 +1,83 @@
+version: '2.4'
+# version 2.x allows you to use depends_on with conditions that cause
+# the node app to wait on mongo to respond to a healthy healthcheck before node is started
+# v3.x doesn't have this feature yet, and is only needed if you want to use Swarm
+
+services:
+
+  nginx:
+    image: nginx:1.17.9
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    links:
+      - app1
+      - app2
+    depends_on:
+      - app1
+      - app2
+
+  mongodb:
+    image: mongo:4.2.8
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    healthcheck:
+      test: "[ `echo 'db.runCommand(\"ping\").ok' | mongo localhost/noddit --quiet` ] && echo 0 || echo 1"
+      interval: 5s
+      start_period: 10s
+      timeout: 4s
+      retries: 3
+
+  redis:
+    image: redis:7.0-rc-alpine
+    ports:
+      - "6379:6379"
+
+  app1:
+    build:
+      context: ./
+      args:
+        - NODE_ENV=development
+      target: dev
+    ports:
+      - "3001:3000"
+      # debug port
+      - "9229:9229"
+    volumes:
+      - .:/app/
+    environment:
+      - SERVICE=1
+    env_file:
+      - ./.env
+    healthcheck:
+      disable: true
+    depends_on:
+      - mongodb
+      - redis
+
+  app2:
+    build:
+      context: ./
+      args:
+        - NODE_ENV=development
+      target: dev
+    ports:
+      - "3002:3000"
+    volumes:
+      - .:/app/
+    environment:
+      - SERVICE=2
+    env_file:
+      - ./.env
+    healthcheck:
+      disable: true
+    depends_on:
+      - mongodb
+      - redis
+
+volumes:
+  data:
+
