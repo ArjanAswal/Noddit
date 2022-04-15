@@ -1,6 +1,7 @@
 const validator = require('validator');
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const userSchema = new Schema({
   username: {
@@ -108,6 +109,7 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
+// Change password
 userSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
   if (!this.isModified('password')) return next();
@@ -124,5 +126,25 @@ userSchema.pre('save', function (next) {
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
+
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
 
 module.exports = model('User', userSchema);

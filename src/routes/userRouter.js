@@ -14,6 +14,15 @@ router.post(
   authController.signin
 );
 
+router.get('/signout', authController.signout);
+router.post('/forgotPassword', authController.forgotPassword);
+router.patch('/resetPassword/:token', authController.resetPassword);
+router.patch(
+  '/updatePassword',
+  passport.authenticate('jwt', { session: false }),
+  authController.updatePassword
+);
+
 router.route('/:id').get(userController.getUser);
 
 module.exports = router;

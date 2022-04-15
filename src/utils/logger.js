@@ -5,6 +5,9 @@ const logConfiguration = {
     winston.format.label({
       label: `🏷️`,
     }),
+    winston.format.colorize({
+      all: true,
+    }),
     winston.format.timestamp({
       format: 'DD-MMM-YYYY HH:mm:ss',
     }),
