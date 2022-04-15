@@ -79,32 +79,32 @@ const userSchema = new Schema({
 userSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'subscribedCommunities',
-    select: '-__v -bannedUsers',
+    select: '-__v -bannedUsers -creator -moderators -bannedUsers',
   });
-  this.populate({
-    path: 'upvotedPosts',
-    select: '-__v',
-  });
-  this.populate({
-    path: 'downvotedPosts',
-    select: '-__v',
-  });
-  this.populate({
-    path: 'upvotedComments',
-    select: '-__v',
-  });
-  this.populate({
-    path: 'downvotedComments',
-    select: '-__v',
-  });
-  this.populate({
-    path: 'upvotedReplies',
-    select: '-__v',
-  });
-  this.populate({
-    path: 'downvotedReplies',
-    select: '-__v',
-  });
+  // this.populate({
+  //   path: 'upvotedPosts',
+  //   select: '-__v',
+  // });
+  // this.populate({
+  //   path: 'downvotedPosts',
+  //   select: '-__v',
+  // });
+  // this.populate({
+  //   path: 'upvotedComments',
+  //   select: '-__v',
+  // });
+  // this.populate({
+  //   path: 'downvotedComments',
+  //   select: '-__v',
+  // });
+  // this.populate({
+  //   path: 'upvotedReplies',
+  //   select: '-__v',
+  // });
+  // this.populate({
+  //   path: 'downvotedReplies',
+  //   select: '-__v',
+  // });
 
   next();
 });

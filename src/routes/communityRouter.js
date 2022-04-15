@@ -37,4 +37,18 @@ router
     communityController.unban
   );
 
+router
+  .route('/:id/subscribe')
+  .patch(
+    passport.authenticate('jwt', { session: false }),
+    communityController.subscribe
+  );
+
+router
+  .route('/:id/unsubscribe')
+  .patch(
+    passport.authenticate('jwt', { session: false }),
+    communityController.unsubscribe
+  );
+
 module.exports = router;

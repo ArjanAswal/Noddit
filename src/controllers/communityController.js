@@ -200,3 +200,67 @@ exports.unban = async (req, res, next) => {
     },
   });
 };
+
+exports.subscribe = async (req, res, next) => {
+  const community = await Community.findById(req.params.id);
+
+  if (!community) {
+    throw new AppError('Community not found', 404);
+  }
+
+  const user = await User.findById(req.user.id);
+
+  const subscribedCommunities = user.subscribedCommunities.map(community =>
+    community._id.toString()
+  );
+
+  if (subscribedCommunities?.includes(community._id.toString())) {
+    throw new AppError('User is already subscribed to this community', 400);
+  }
+
+  user.subscribedCommunities.push(community._id);
+  await user.save();
+
+  community.subscribers++;
+
+  community.save();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user,
+    },
+  });
+};
+
+exports.unsubscribe = async (req, res, next) => {
+  const community = await Community.findById(req.params.id);
+
+  if (!community) {
+    throw new AppError('Community not found', 404);
+  }
+
+  const user = await User.findById(req.user.id);
+
+  const subscribedCommunities = user.subscribedCommunities.map(community =>
+    community._id.toString()
+  );
+
+  if (!subscribedCommunities?.includes(community._id.toString())) {
+    throw new AppError('User not subscribed to this community', 400);
+  }
+
+  user.subscribedCommunities.pull(community._id);
+  await user.save();
+
+  community.subscribers--;
+
+  community.save();
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      user,
+    },
+  });
+};

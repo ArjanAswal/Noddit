@@ -15,6 +15,10 @@ const communitySchema = new Schema({
     minlength: [3, 'Community name must be at least 3 characters long!'],
     maxlength: [25, 'Community name must be at most 25 characters long!'],
   },
+  subscribers: {
+    type: Number,
+    default: 0,
+  },
   moderators: {
     type: [Schema.Types.ObjectId],
     ref: 'User',
