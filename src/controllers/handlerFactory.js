@@ -56,7 +56,7 @@ exports.createDocument = Model => async (req, res, next) => {
   );
 
   if (bannedUsers?.includes(user.id)) {
-    throw new AppError('You are banned from this community', 400);
+    throw new AppError('You are banned from this community', 403);
   }
 
   if (Model.modelName === 'Comment') {

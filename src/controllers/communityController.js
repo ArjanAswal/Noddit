@@ -54,7 +54,7 @@ exports.createCommunity = async (req, res, next) => {
     postFlairs,
   });
 
-  res.status(200).json({
+  res.status(201).json({
     status: 'success',
     data: {
       community,
