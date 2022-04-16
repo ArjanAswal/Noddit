@@ -11,6 +11,11 @@ const replySchema = new Schema({
     ref: 'Comment',
     required: [true, 'Reply must belong to a comment!'],
   },
+  community: {
+    type: Schema.Types.ObjectId,
+    ref: 'Community',
+    required: [true, 'Reply must belong to a community!'],
+  },
   content: {
     type: String,
     required: [true, 'content cannot be empty!'],

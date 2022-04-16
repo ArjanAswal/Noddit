@@ -1,7 +1,6 @@
 const express = require('express');
 const passport = require('passport');
 const communityController = require('../controllers/communityController');
-
 const router = express.Router();
 
 router

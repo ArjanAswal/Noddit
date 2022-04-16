@@ -2,10 +2,11 @@ const app = require('./app');
 const mongoose = require('mongoose');
 const logger = require('./utils/logger');
 const calculateScore = require('./jobs/calculateScore');
+const { connectRedis } = require('./utils/redis');
 
 process.on('uncaughtException', err => {
   logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-  logger.error(err.name, err.message);
+  logger.error(err);
   process.exit(1);
 });
 
@@ -13,6 +14,8 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
   logger.info('DB connection successful!');
   // Schedule cron job
   calculateScore();
+  // Connect to redis
+  connectRedis();
 });
 
 const port = process.env.PORT ?? 3000;
@@ -22,7 +25,7 @@ const server = app.listen(port, () => {
 
 process.on('unhandledRejection', err => {
   logger.error('UNHANDLED REJECTION! 💥 Shutting down...');
-  logger.error(err.name, err.message);
+  logger.error(err);
   server.close(() => {
     process.exit(1);
   });

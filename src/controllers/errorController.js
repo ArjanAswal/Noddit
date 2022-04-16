@@ -1,3 +1,5 @@
+const logger = require('../utils/logger');
+
 const sendErrorDev = (err, res) => {
   switch (err.name) {
     case 'CastError':
@@ -50,7 +52,7 @@ const sendErrorProd = (err, res) => {
     // Programming or other unknown error: don't leak error details
   } else {
     // 1) Log error
-    console.error('ERROR 💥', err);
+    logger.error('ERROR 💥', err);
 
     // 2) Send generic message
     res.status(500).json({

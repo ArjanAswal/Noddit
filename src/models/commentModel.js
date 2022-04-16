@@ -17,6 +17,11 @@ const commentSchema = new Schema({
     trim: true,
     maxlength: [1000, 'content cannot be longer than 1000 characters!'],
   },
+  community: {
+    type: Schema.Types.ObjectId,
+    ref: 'Community',
+    required: [true, 'Comment must belong to a community!'],
+  },
   score: {
     type: Number,
     default: 0,

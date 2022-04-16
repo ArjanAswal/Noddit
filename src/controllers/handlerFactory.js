@@ -6,9 +6,19 @@ const Post = require('./../models/postModel');
 const Comment = require('./../models/commentModel');
 const Reply = require('./../models/replyModel');
 const User = require('./../models/userModel');
+const { clearCache } = require('../utils/redis');
 
 exports.getDocuments = Model => async (req, res, next) => {
-  const features = new APIFeatures(Model.find(), req.query)
+  let query = Model.find().cache({
+    key: Model.modelName,
+  });
+
+  // Don't cache communities
+  if (Model.modelName === 'Community') {
+    query = Model.find();
+  }
+
+  const features = new APIFeatures(query, req.query)
     .filter()
     .sort()
     .limitFields()
@@ -66,6 +76,7 @@ exports.createDocument = Model => async (req, res, next) => {
       creator: user.id,
       post,
       content,
+      community: parent.community._id,
     });
   } else if (Model.modelName === 'Reply') {
     parent =
@@ -76,6 +87,7 @@ exports.createDocument = Model => async (req, res, next) => {
       creator: user.id,
       comment,
       content,
+      community: parent.community._id,
     });
   } else if (Model.modelName === 'Post') {
     if (!communityDoc) {
@@ -93,6 +105,8 @@ exports.createDocument = Model => async (req, res, next) => {
     throw new Error('Invalid model name');
   }
 
+  clearCache(Model.modelName);
+
   res.status(200).json({
     status: 'success',
     data: {
@@ -105,14 +119,14 @@ exports.deleteDocument = Model => async (req, res, next) => {
   const user = req.user;
 
   const document = await Model.findById(req.params.id);
-  const community = await Model.findById(document.community);
-  const moderators = community.moderators.map(moderator =>
-    moderator._id.toString()
-  );
-
   if (!document) {
     throw new AppError('document not found', 404);
   }
+
+  const community = await Community.findById(document.community._id);
+  const moderators = community.moderators.map(moderator =>
+    moderator._id.toString()
+  );
 
   if (
     document.creator.toString() !== user.id &&
@@ -123,6 +137,8 @@ exports.deleteDocument = Model => async (req, res, next) => {
   }
 
   await Model.findByIdAndDelete(req.params.id);
+
+  clearCache(Model.modelName);
 
   res.status(204).json({
     status: 'success',

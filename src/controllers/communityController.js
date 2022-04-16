@@ -125,7 +125,7 @@ exports.deleteCommunity = async (req, res, next) => {
 
   const user = req.user;
 
-  if (community.creator !== user?.id && user.role !== 'admin') {
+  if (community.creator._id.toString() !== user?.id && user.role !== 'admin') {
     throw new AppError(
       'You are not the creator of this community nor the Admin',
       403
@@ -150,6 +150,18 @@ exports.ban = async (req, res, next) => {
 
   if (!community) {
     throw new AppError('Community not found', 404);
+  }
+
+  const moderators = community.moderators.map(moderator =>
+    moderator._id.toString()
+  );
+
+  if (!moderators.includes(req.body.user)) {
+    throw new AppError('You are not a moderator of this community', 400);
+  }
+
+  if (community.creator._id.toString() === req.body.user) {
+    throw new AppError('Unauthorized', 400);
   }
 
   const bannedUsers = community?.bannedUsers?.map(userId => userId.toString());
@@ -179,6 +191,14 @@ exports.unban = async (req, res, next) => {
 
   if (!community) {
     throw new AppError('Community not found', 404);
+  }
+
+  const moderators = community.moderators.map(moderator =>
+    moderator._id.toString()
+  );
+
+  if (!moderators.includes(req.body.user)) {
+    throw new AppError('You are not a moderator of this community', 400);
   }
 
   const bannedUsers = community?.bannedUsers?.map(userId => userId.toString());
