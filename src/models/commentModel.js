@@ -29,6 +29,10 @@ const commentSchema = new Schema({
     type: Number,
     default: 0,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 commentSchema.pre(/^find/, function (next) {

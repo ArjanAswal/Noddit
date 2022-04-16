@@ -78,6 +78,10 @@ exports.createDocument = Model => async (req, res, next) => {
       content,
     });
   } else if (Model.modelName === 'Post') {
+    if (!communityDoc) {
+      throw new AppError('Community not found', 404);
+    }
+
     document = await Model.create({
       creator: user.id,
       title,

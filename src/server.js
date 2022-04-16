@@ -1,6 +1,7 @@
 const app = require('./app');
 const mongoose = require('mongoose');
 const logger = require('./utils/logger');
+const calculateScore = require('./jobs/calculateScore');
 
 process.on('uncaughtException', err => {
   logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
@@ -8,9 +9,11 @@ process.on('uncaughtException', err => {
   process.exit(1);
 });
 
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => logger.info('DB connection successful!'));
+mongoose.connect(process.env.MONGO_URL).then(() => {
+  logger.info('DB connection successful!');
+  // Schedule cron job
+  calculateScore();
+});
 
 const port = process.env.PORT ?? 3000;
 const server = app.listen(port, () => {

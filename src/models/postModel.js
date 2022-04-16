@@ -35,6 +35,10 @@ const postSchema = new Schema({
     type: Number,
     default: 0,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 postSchema.pre(/^find/, function (next) {

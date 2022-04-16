@@ -29,6 +29,10 @@ const replySchema = new Schema({
     type: Number,
     default: 0,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
 });
 
 replySchema.pre(/^find/, function (next) {

@@ -50,6 +50,10 @@ const userSchema = new Schema({
     type: Number,
     default: 0,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
   upvotedPosts: {
     type: [Schema.Types.ObjectId],
     ref: 'Post',
