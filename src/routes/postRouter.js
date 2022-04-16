@@ -12,6 +12,13 @@ router
   );
 
 router
+  .route('/feed')
+  .get(
+    passport.authenticate('jwt', { session: false }),
+    postController.getFeed
+  );
+
+router
   .route('/:id')
   .get(postController.getPost)
   .delete(
