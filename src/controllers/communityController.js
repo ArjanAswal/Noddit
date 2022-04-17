@@ -156,7 +156,7 @@ exports.ban = async (req, res, next) => {
     moderator._id.toString()
   );
 
-  if (!moderators.includes(req.body.user)) {
+  if (!moderators.includes(req.user.id)) {
     throw new AppError('You are not a moderator of this community', 400);
   }
 
@@ -197,7 +197,7 @@ exports.unban = async (req, res, next) => {
     moderator._id.toString()
   );
 
-  if (!moderators.includes(req.body.user)) {
+  if (!moderators.includes(req.user.id)) {
     throw new AppError('You are not a moderator of this community', 400);
   }
 

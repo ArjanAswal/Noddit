@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('./../../src/models/userModel');
+const { connectRedis } = require('../../src/utils/redis');
 
 async function removeAllCollections() {
   const collections = Object.keys(mongoose.connection.collections);
@@ -36,6 +37,7 @@ module.exports = {
     // Connect to Mongoose
     beforeAll(async () => {
       await mongoose.connect(process.env.MONGO_URL);
+      await connectRedis();
     });
     //mongoexport --db <databaseName> --collection <collectionName> --jsonArray --pretty --out output.json
 
