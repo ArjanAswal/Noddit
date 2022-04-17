@@ -78,3 +78,43 @@ test('Banned user should not be able to post', async () => {
 
   expect(response.statusCode).toBe(403);
 });
+
+test('Should subscribe to community', async () => {
+  const response = await request(app)
+    .patch('/api/v1/communities/' + communityID + '/subscribe')
+    .set('Authorization', 'Bearer ' + token)
+    .send();
+  expect(response.statusCode).toBe(200);
+});
+
+test('Should unsubscribe to community', async () => {
+  await request(app)
+    .patch('/api/v1/communities/' + communityID + '/subscribe')
+    .set('Authorization', 'Bearer ' + token)
+    .send();
+  const response = await request(app)
+    .patch('/api/v1/communities/' + communityID + '/unsubscribe')
+    .set('Authorization', 'Bearer ' + token)
+    .send();
+
+  expect(response.statusCode).toBe(200);
+});
+
+test('Should update community', async () => {
+  const response = await request(app)
+    .patch('/api/v1/communities/' + communityID)
+    .set('Authorization', 'Bearer ' + token)
+    .send({
+      name: 'noddit_community_updated',
+    });
+
+  expect(response.statusCode).toBe(200);
+});
+
+test('Should delete community', async () => {
+  const response = await request(app)
+    .delete('/api/v1/communities/' + communityID)
+    .set('Authorization', 'Bearer ' + token);
+
+  expect(response.statusCode).toBe(200);
+});
