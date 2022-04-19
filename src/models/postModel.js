@@ -41,6 +41,8 @@ const postSchema = new Schema({
   },
 });
 
+postSchema.index({ score: 1 });
+
 postSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'creator',
