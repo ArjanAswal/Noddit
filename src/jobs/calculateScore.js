@@ -36,7 +36,7 @@ module.exports = () =>
 
     // 2. For each post, calculate the score
 
-    posts.forEach(async post => {
+    posts.forEach(async (post) => {
       const t = (Date.now() - post.createdAt) / 1000;
       const x = post.upvotes - post.downvotes;
       let y, z;
@@ -73,7 +73,7 @@ module.exports = () =>
 
     // 2. For each comment, calculate the score
 
-    comments.forEach(async comment => {
+    comments.forEach(async (comment) => {
       comment.score = calculateCommentScore(comment);
 
       // 3. Update and save the comment
@@ -91,7 +91,7 @@ module.exports = () =>
 
     // 2. For each reply, calculate the score
 
-    replies.forEach(async reply => {
+    replies.forEach(async (reply) => {
       reply.score = calculateCommentScore(reply);
 
       // 3. Update and save the reply

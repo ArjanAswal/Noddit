@@ -9,7 +9,7 @@ const client = redis.createClient({
 });
 
 client.hGet = util.promisify(client.hGet);
-const exec = mongoose.Query.prototype.exec;
+const { exec } = mongoose.Query.prototype;
 
 mongoose.Query.prototype.cache = function (options = {}) {
   this.useCache = true;
@@ -30,7 +30,7 @@ mongoose.Query.prototype.exec = async function () {
     const doc = JSON.parse(cacheValue);
 
     return Array.isArray(doc)
-      ? doc.map(d => new this.model(d))
+      ? doc.map((d) => new this.model(d))
       : new this.model(doc);
   }
 

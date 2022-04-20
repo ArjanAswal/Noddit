@@ -8,7 +8,7 @@ const Reply = require('./../models/replyModel');
 const User = require('./../models/userModel');
 const { clearCache } = require('../utils/redis');
 
-exports.getDocuments = Model => async (req, res, next) => {
+exports.getDocuments = (Model) => async (req, res, next) => {
   let query = Model.find().cache({
     key: Model.modelName,
   });
@@ -38,7 +38,7 @@ exports.getDocuments = Model => async (req, res, next) => {
   });
 };
 
-exports.getDocument = Model => async (req, res, next) => {
+exports.getDocument = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
 
   if (!document) {
@@ -53,15 +53,15 @@ exports.getDocument = Model => async (req, res, next) => {
   });
 };
 
-exports.createDocument = Model => async (req, res, next) => {
+exports.createDocument = (Model) => async (req, res, next) => {
   const { title, description, mediaURLs, content, post, comment, community } =
     req.body;
   let parent;
   let document;
-  const user = req.user;
+  const { user } = req;
 
   const communityDoc = await Community.findById(community);
-  const bannedUsers = communityDoc?.bannedUsers?.map(userId =>
+  const bannedUsers = communityDoc?.bannedUsers?.map((userId) =>
     userId.toString()
   );
 
@@ -115,8 +115,8 @@ exports.createDocument = Model => async (req, res, next) => {
   });
 };
 
-exports.deleteDocument = Model => async (req, res, next) => {
-  const user = req.user;
+exports.deleteDocument = (Model) => async (req, res, next) => {
+  const { user } = req;
 
   const document = await Model.findById(req.params.id);
   if (!document) {
@@ -124,7 +124,7 @@ exports.deleteDocument = Model => async (req, res, next) => {
   }
 
   const community = await Community.findById(document.community._id);
-  const moderators = community.moderators.map(moderator =>
+  const moderators = community.moderators.map((moderator) =>
     moderator._id.toString()
   );
 
@@ -146,9 +146,9 @@ exports.deleteDocument = Model => async (req, res, next) => {
   });
 };
 
-exports.upvoteDocument = Model => async (req, res, next) => {
+exports.upvoteDocument = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
-  const user = req.user;
+  const { user } = req;
 
   if (!document) {
     throw new AppError('document not found', 404);
@@ -171,8 +171,10 @@ exports.upvoteDocument = Model => async (req, res, next) => {
     downvotedDocs = 'downvotedReplies';
   }
 
-  const upvotedDocsIds = userDoc[upvotedDocs].map(doc => doc._id.toString());
-  const downvotedDocsIds = userDoc[downvotedDocs].map(doc =>
+  const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
+    doc._id.toString()
+  );
+  const downvotedDocsIds = userDoc[`${downvotedDocs}`].map((doc) =>
     doc._id.toString()
   );
 
@@ -180,13 +182,13 @@ exports.upvoteDocument = Model => async (req, res, next) => {
     throw new AppError('You have already upvoted', 400);
   } else {
     if (downvotedDocsIds.includes(document?.id)) {
-      userDoc[downvotedDocs].pull(document?.id); // removed
+      userDoc[`${downvotedDocs}`].pull(document?.id); // removed
 
       document.downvotes--;
       creator.karma++;
     }
 
-    userDoc[upvotedDocs].push(document?.id);
+    userDoc[`${upvotedDocs}`].push(document?.id);
     userDoc.save();
     document.upvotes++;
     document.save();
@@ -202,9 +204,9 @@ exports.upvoteDocument = Model => async (req, res, next) => {
   });
 };
 
-exports.downvoteDocument = Model => async (req, res, next) => {
+exports.downvoteDocument = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
-  const user = req.user;
+  const { user } = req;
 
   if (!document) {
     throw new AppError('document not found', 404);
@@ -227,8 +229,10 @@ exports.downvoteDocument = Model => async (req, res, next) => {
     downvotedDocs = 'downvotedReplies';
   }
 
-  const upvotedDocsIds = userDoc[upvotedDocs].map(doc => doc._id.toString());
-  const downvotedDocsIds = userDoc[downvotedDocs].map(doc =>
+  const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
+    doc._id.toString()
+  );
+  const downvotedDocsIds = userDoc[`${downvotedDocs}`].map((doc) =>
     doc._id.toString()
   );
 
@@ -236,13 +240,13 @@ exports.downvoteDocument = Model => async (req, res, next) => {
     throw new AppError('You have already downvoted', 400);
   } else {
     if (upvotedDocsIds.includes(document?.id)) {
-      userDoc[upvotedDocs].pull(document?.id); // removed
+      userDoc[`${upvotedDocs}`].pull(document?.id); // removed
 
       document.upvotes--;
       creator.karma--;
     }
 
-    userDoc[downvotedDocs].push(document?.id);
+    userDoc[`${downvotedDocs}`].push(document?.id);
     userDoc.save();
     document.downvotes++;
     document.save();
@@ -258,9 +262,9 @@ exports.downvoteDocument = Model => async (req, res, next) => {
   });
 };
 
-exports.removeUpvote = Model => async (req, res, next) => {
+exports.removeUpvote = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
-  const user = req.user;
+  const { user } = req;
 
   if (!document) {
     throw new AppError('document not found', 404);
@@ -270,28 +274,30 @@ exports.removeUpvote = Model => async (req, res, next) => {
   const creator = await User.findById(document.creator);
 
   let upvotedDocs = 'upvotedDocs';
-  let downvotedDocs = 'downvotedDocs';
+  // let downvotedDocs = 'downvotedDocs';
 
   if (Model.modelName === 'Post') {
     upvotedDocs = 'upvotedPosts';
-    downvotedDocs = 'downvotedPosts';
+    // downvotedDocs = 'downvotedPosts';
   } else if (Model.modelName === 'Comment') {
     upvotedDocs = 'upvotedComments';
-    downvotedDocs = 'downvotedComments';
+    // downvotedDocs = 'downvotedComments';
   } else if (Model.modelName === 'Reply') {
     upvotedDocs = 'upvotedReplies';
-    downvotedDocs = 'downvotedReplies';
+    // downvotedDocs = 'downvotedReplies';
   }
 
-  const upvotedDocsIds = userDoc[upvotedDocs].map(doc => doc._id.toString());
-  const downvotedDocsIds = userDoc[downvotedDocs].map(doc =>
+  const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
     doc._id.toString()
   );
+  // const downvotedDocsIds = userDoc[`${downvotedDocs}`].map((doc) =>
+  //   doc._id.toString()
+  // );
 
   if (!upvotedDocsIds.includes(document?.id)) {
     throw new AppError('You have not upvoted', 400);
   } else {
-    userDoc[upvotedDocs].pull(document?.id); // removed
+    userDoc[`${upvotedDocs}`].pull(document?.id); // removed
 
     document.upvotes--;
     creator.karma--;
@@ -309,9 +315,9 @@ exports.removeUpvote = Model => async (req, res, next) => {
   });
 };
 
-exports.removeDownvote = Model => async (req, res, next) => {
+exports.removeDownvote = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
-  const user = req.user;
+  const { user } = req;
 
   if (!document) {
     throw new AppError('document not found', 404);
@@ -320,29 +326,31 @@ exports.removeDownvote = Model => async (req, res, next) => {
   const userDoc = await User.findById(user?.id);
   const creator = await User.findById(document.creator);
 
-  let upvotedDocs = 'upvotedDocs';
+  // let upvotedDocs = 'upvotedDocs';
   let downvotedDocs = 'downvotedDocs';
 
   if (Model.modelName === 'Post') {
-    upvotedDocs = 'upvotedPosts';
+    // upvotedDocs = 'upvotedPosts';
     downvotedDocs = 'downvotedPosts';
   } else if (Model.modelName === 'Comment') {
-    upvotedDocs = 'upvotedComments';
+    // upvotedDocs = 'upvotedComments';
     downvotedDocs = 'downvotedComments';
   } else if (Model.modelName === 'Reply') {
-    upvotedDocs = 'upvotedReplies';
+    // upvotedDocs = 'upvotedReplies';
     downvotedDocs = 'downvotedReplies';
   }
 
-  const upvotedDocsIds = userDoc[upvotedDocs].map(doc => doc._id.toString());
-  const downvotedDocsIds = userDoc[downvotedDocs].map(doc =>
+  // const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
+  //   doc._id.toString()
+  // );
+  const downvotedDocsIds = userDoc[`${downvotedDocs}`].map((doc) =>
     doc._id.toString()
   );
 
   if (!downvotedDocsIds.includes(document?.id)) {
     throw new AppError('You have not downvoted', 400);
   } else {
-    userDoc[downvotedDocs].pull(document?.id); // removed
+    userDoc[`${downvotedDocs}`].pull(document?.id); // removed
 
     document.downvotes--;
     creator.karma++;

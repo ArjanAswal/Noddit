@@ -28,7 +28,7 @@ exports.createCommunity = async (req, res, next) => {
     );
   }
 
-  const user = req.user;
+  const { user } = req;
 
   const subCreatorDoc = await User.findById(user.id).select('karma');
 
@@ -76,7 +76,7 @@ exports.updateCommunity = async (req, res, next) => {
     postFlairs,
   } = req.body;
 
-  const user = req.user;
+  const { user } = req;
 
   const community = await Community.findById(req.params.id);
 
@@ -123,7 +123,7 @@ exports.deleteCommunity = async (req, res, next) => {
     throw new AppError('Community not found', 404);
   }
 
-  const user = req.user;
+  const { user } = req;
 
   if (community.creator._id.toString() !== user?.id && user.role !== 'admin') {
     throw new AppError(
@@ -152,7 +152,7 @@ exports.ban = async (req, res, next) => {
     throw new AppError('Community not found', 404);
   }
 
-  const moderators = community.moderators.map(moderator =>
+  const moderators = community.moderators.map((moderator) =>
     moderator._id.toString()
   );
 
@@ -164,7 +164,9 @@ exports.ban = async (req, res, next) => {
     throw new AppError('Unauthorized', 400);
   }
 
-  const bannedUsers = community?.bannedUsers?.map(userId => userId.toString());
+  const bannedUsers = community?.bannedUsers?.map((userId) =>
+    userId.toString()
+  );
 
   if (bannedUsers?.includes(req.body.user)) {
     throw new AppError('User is already banned from this community', 400);
@@ -193,7 +195,7 @@ exports.unban = async (req, res, next) => {
     throw new AppError('Community not found', 404);
   }
 
-  const moderators = community.moderators.map(moderator =>
+  const moderators = community.moderators.map((moderator) =>
     moderator._id.toString()
   );
 
@@ -201,11 +203,13 @@ exports.unban = async (req, res, next) => {
     throw new AppError('You are not a moderator of this community', 400);
   }
 
-  const bannedUsers = community?.bannedUsers?.map(userId => userId.toString());
+  const bannedUsers = community?.bannedUsers?.map((userId) =>
+    userId.toString()
+  );
 
   if (bannedUsers?.includes(req.body.user)) {
     community['bannedUsers'] = bannedUsers?.filter(
-      userId => userId !== req.body.user
+      (userId) => userId !== req.body.user
     );
   } else {
     throw new AppError('User is not banned from this community', 400);
@@ -230,7 +234,7 @@ exports.subscribe = async (req, res, next) => {
 
   const user = await User.findById(req.user.id);
 
-  const subscribedCommunities = user.subscribedCommunities.map(community =>
+  const subscribedCommunities = user.subscribedCommunities.map((community) =>
     community._id.toString()
   );
 
@@ -262,7 +266,7 @@ exports.unsubscribe = async (req, res, next) => {
 
   const user = await User.findById(req.user.id);
 
-  const subscribedCommunities = user.subscribedCommunities.map(community =>
+  const subscribedCommunities = user.subscribedCommunities.map((community) =>
     community._id.toString()
   );
 
