@@ -5,77 +5,45 @@ const router = express.Router();
 
 /**
  * @swagger
- * "tags": [
- *    {
- *     "name": "Posts",
- *     "description": "API for Posts"
- *    }
- *  ]
+ * tags:
+ * - name: Posts
+ *   description: API for Posts
  */
 
 /**
  * @swagger
- * "definitions": {
- *   "Post": {
- *     "required": ["name", "_id", "companies"],
- *     "properties": {
- *       "_id": {
- *         "type": "integer",
- *         "uniqueItems": true
- *       },
- *       "isPublic": {
- *         "type": "boolean"
- *       },
- *       "name": {
- *         "type": "string"
- *       },
- *       "books": {
- *         "type": "array",
- *         "items": {
- *           "type": "object",
- *           "properties": {
- *             "name": {
- *               "type": "string"
- *             },
- *             "amount": {
- *               "type": "number"
- *             }
- *           }
- *         }
- *       },
- *       "companies": {
- *         "type": "array",
- *         "items": {
- *           "type": "string"
- *         }
- *       }
- *     }
- *   },
- *   "Posts": {
- *     "type": "array",
- *     "$ref": "#/definitions/Post"
- *   }
- * }
- */
-
-/**
- * @swagger
- * "/posts": {
- *      "get": {
- *         "tags": ["Posts"],
- *           "description": "Get posts",
- *           "responses": {
- *               "200": {
- *                   "description": "Returns the posts",
- *                   "content": {
- *                       "application/json": {
- *                          "$ref": "#/definitions/Posts"
- *                      }
- *                  }
- *              }
- *          }
- *      }
- *  }
+ * "/posts":
+ *   get:
+ *     tags:
+ *     - Posts
+ *     description: Get posts
+ *     produces:
+ *     - application/json
+ *     parameters:
+ *     - name: sort
+ *       in: query
+ *       description: How to sort the posts
+ *       type: string
+ *     - name: limit
+ *       in: query
+ *       description: How many posts to return
+ *       type: number
+ *     responses:
+ *       '200':
+ *         description: Returns the posts
+ *         content:
+ *           application/json:
+ *             schema:
+ *               "$ref": "#/components/schemas/Posts"
+ *       '500':
+ *         description: Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               "$ref": "#/components/schemas/Error"
+ *             example:
+ *               status: error
+ *               message: Something went very wrong!
  */
 
 router

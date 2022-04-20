@@ -1,5 +1,20 @@
 const logger = require('../utils/logger');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Error:
+ *       type: object
+ *       properties:
+ *         status:
+ *           type: string
+ *           default: error
+ *         message:
+ *           type: string
+ *           default: Something went very wrong!
+ */
+
 const sendErrorDev = (err, res) => {
   switch (err.name) {
     case 'CastError':

@@ -24,5 +24,5 @@ module.exports = {
       },
     ],
   },
-  apis: ['./src/routes/*'],
+  apis: ['./src/routes/*', './src/models/*', './src/controllers/*'],
 };
