@@ -107,7 +107,7 @@ exports.createDocument = (Model) => async (req, res, next) => {
 
   clearCache(Model.modelName);
 
-  res.status(200).json({
+  res.status(201).json({
     status: 'success',
     data: {
       document,

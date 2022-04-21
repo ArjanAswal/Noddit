@@ -1,7 +1,7 @@
 const express = require('express');
 const postController = require('../controllers/postController');
-const passport = require('passport');
 const router = express.Router();
+const { protect } = require('../controllers/authController');
 
 /**
  * @swagger
@@ -49,46 +49,23 @@ const router = express.Router();
 router
   .route('/')
   .get(postController.getPosts)
-  .post(
-    passport.authenticate('jwt', { session: false }),
-    postController.createPost
-  );
+  .post(protect, postController.createPost);
 
-router
-  .route('/feed')
-  .get(
-    passport.authenticate('jwt', { session: false }),
-    postController.getFeed
-  );
+router.route('/feed').get(protect, postController.getFeed);
 
 router
   .route('/:id')
   .get(postController.getPost)
-  .delete(
-    passport.authenticate('jwt', { session: false }),
-    postController.deletePost
-  );
+  .delete(protect, postController.deletePost);
 
 router
   .route('/:id/upvote')
-  .post(
-    passport.authenticate('jwt', { session: false }),
-    postController.upvotePost
-  )
-  .delete(
-    passport.authenticate('jwt', { session: false }),
-    postController.removeUpvote
-  );
+  .post(protect, postController.upvotePost)
+  .delete(protect, postController.removeUpvote);
 
 router
   .route('/:id/downvote')
-  .post(
-    passport.authenticate('jwt', { session: false }),
-    postController.downvotePost
-  )
-  .delete(
-    passport.authenticate('jwt', { session: false }),
-    postController.removeDownvote
-  );
+  .post(protect, postController.downvotePost)
+  .delete(protect, postController.removeDownvote);
 
 module.exports = router;

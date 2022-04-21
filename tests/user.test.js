@@ -73,7 +73,7 @@ test('Should update password of existing user', async () => {
     password: 'noddit123',
   });
 
-  let token = response.body.token;
+  let { token } = response.body;
 
   await request(app)
     .patch('/api/v1/users/updatePassword')

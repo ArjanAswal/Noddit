@@ -1,44 +1,26 @@
 const express = require('express');
 const replyController = require('../controllers/replyController');
-const passport = require('passport');
+const { protect } = require('../controllers/authController');
 const router = express.Router();
 
 router
   .route('/')
   .get(replyController.getReplies)
-  .post(
-    passport.authenticate('jwt', { session: false }),
-    replyController.createReply
-  );
+  .post(protect, replyController.createReply);
 
 router
   .route('/:id')
   .get(replyController.getReply)
-  .delete(
-    passport.authenticate('jwt', { session: false }),
-    replyController.deleteReply
-  );
+  .delete(protect, replyController.deleteReply);
 
 router
   .route('/:id/upvote')
-  .post(
-    passport.authenticate('jwt', { session: false }),
-    replyController.upvoteReply
-  )
-  .delete(
-    passport.authenticate('jwt', { session: false }),
-    replyController.removeUpvote
-  );
+  .post(protect, replyController.upvoteReply)
+  .delete(protect, replyController.removeUpvote);
 
 router
   .route('/:id/downvote')
-  .post(
-    passport.authenticate('jwt', { session: false }),
-    replyController.downvoteReply
-  )
-  .delete(
-    passport.authenticate('jwt', { session: false }),
-    replyController.removeDownvote
-  );
+  .post(protect, replyController.downvoteReply)
+  .delete(protect, replyController.removeDownvote);
 
 module.exports = router;

@@ -1,53 +1,27 @@
 const express = require('express');
-const passport = require('passport');
 const communityController = require('../controllers/communityController');
+const { protect } = require('../controllers/authController');
+
 const router = express.Router();
 
 router
   .route('/')
   .get(communityController.getCommunities)
-  .post(
-    passport.authenticate('jwt', { session: false }),
-    communityController.createCommunity
-  );
+  .post(protect, communityController.createCommunity);
 
 router
   .route('/:id')
   .get(communityController.getCommunity)
-  .patch(
-    passport.authenticate('jwt', { session: false }),
-    communityController.updateCommunity
-  )
-  .delete(
-    passport.authenticate('jwt', { session: false }),
-    communityController.deleteCommunity
-  );
+  .patch(protect, communityController.updateCommunity)
+  .delete(protect, communityController.deleteCommunity);
 
-router
-  .route('/:id/ban')
-  .patch(
-    passport.authenticate('jwt', { session: false }),
-    communityController.ban
-  );
-router
-  .route('/:id/unban')
-  .patch(
-    passport.authenticate('jwt', { session: false }),
-    communityController.unban
-  );
+router.route('/:id/ban').patch(protect, communityController.ban);
+router.route('/:id/unban').patch(protect, communityController.unban);
 
-router
-  .route('/:id/subscribe')
-  .patch(
-    passport.authenticate('jwt', { session: false }),
-    communityController.subscribe
-  );
+router.route('/:id/subscribe').patch(protect, communityController.subscribe);
 
 router
   .route('/:id/unsubscribe')
-  .patch(
-    passport.authenticate('jwt', { session: false }),
-    communityController.unsubscribe
-  );
+  .patch(protect, communityController.unsubscribe);
 
 module.exports = router;

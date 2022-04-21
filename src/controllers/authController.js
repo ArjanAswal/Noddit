@@ -4,8 +4,9 @@ const User = require('../models/userModel');
 const Email = require('../utils/email');
 const AppError = require('../utils/appError');
 const crypto = require('crypto');
+const passport = require('passport');
 
-const signToken = id => {
+const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET ?? 'secret', {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
@@ -65,6 +66,15 @@ exports.signout = (req, res) => {
     httpOnly: true,
   });
   res.status(200).json({ status: 'success' });
+};
+
+exports.protect = async (req, res, next) => {
+  passport.authenticate('jwt', { session: false }, function (err, user) {
+    if (err) throw err;
+    if (!user) throw new AppError('Unauthorized', 401);
+    req.user = user;
+    next();
+  })(req, res, next);
 };
 
 exports.restrictTo = (...roles) => {
