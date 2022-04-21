@@ -1,6 +1,16 @@
 module.exports = {
   definition: {
     openapi: '3.0.2',
+    components: {
+      securitySchemes: {
+        jwt: {
+          type: 'http',
+          scheme: 'bearer',
+          in: 'header',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
     info: {
       title: 'Noddit API',
       version: '1.0',
