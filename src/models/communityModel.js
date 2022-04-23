@@ -1,5 +1,59 @@
 const { Schema, model } = require('mongoose');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Community:
+ *       type: object
+ *       required:
+ *       - _id
+ *       - creator
+ *       - name
+ *       properties:
+ *         _id:
+ *           type: string
+ *           uniqueItems: true
+ *         creator:
+ *           type: string
+ *           description: The user who created the post
+ *         name:
+ *           type: string
+ *           description: The name of the post
+ *         subscribers:
+ *           type: number
+ *         moderators:
+ *           type: array
+ *           items:
+ *             type: string
+ *             description: The moderators of the community
+ *         bannedUsers:
+ *           type: array
+ *           items:
+ *             type: string
+ *             description: The users banned from the community
+ *         rules:
+ *           type: string
+ *         avatar:
+ *           type: string
+ *         cover:
+ *           type: string
+ *         description:
+ *           type: string
+ *           description: The description of the post
+ *         welcomeMessage:
+ *           type: string
+ *         score:
+ *           type: number
+ *           description: The score of the post
+ *         createdAt:
+ *           type: string
+ *           description: The date the post was created
+ *     Communities:
+ *       type: array
+ *       "$ref": "#/components/schemas/Community"
+ */
+
 const communitySchema = new Schema({
   creator: {
     type: Schema.Types.ObjectId,
@@ -45,12 +99,6 @@ const communitySchema = new Schema({
   },
   welcomeMessage: {
     type: String,
-  },
-  userFlairs: {
-    type: [String],
-  },
-  postFlairs: {
-    type: [String],
   },
   score: {
     type: Number,
