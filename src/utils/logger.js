@@ -12,7 +12,7 @@ const logConfiguration = {
       format: 'DD-MMM-YYYY HH:mm:ss',
     }),
     winston.format.printf(
-      info =>
+      (info) =>
         `${info.level}: ${info.label}: ${[info.timestamp]}: ${info.message}`
     )
   ),

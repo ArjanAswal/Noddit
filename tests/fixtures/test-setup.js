@@ -5,7 +5,7 @@ const { connectRedis } = require('../../src/utils/redis');
 async function removeAllCollections() {
   const collections = Object.keys(mongoose.connection.collections);
   for (const collectionName of collections) {
-    const collection = mongoose.connection.collections[collectionName];
+    const collection = mongoose.connection.collections[`${collectionName}`];
     await collection.deleteMany();
   }
 }

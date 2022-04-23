@@ -13,7 +13,7 @@ beforeEach(async () => {
     email: '1@noddit.com',
     password: 'noddit123',
   });
-  token = response.body.token;
+  token = response.body[`token`];
 
   const response2 = await request(app)
     .post('/api/v1/communities')
@@ -65,7 +65,7 @@ test('Banned user should not be able to post', async () => {
     password: 'noddit123',
   });
 
-  token = response.body.token;
+  token = response.body[`token`];
 
   response = await request(app)
     .post('/api/v1/posts/')
@@ -96,17 +96,6 @@ test('Should unsubscribe to community', async () => {
     .patch('/api/v1/communities/' + communityID + '/unsubscribe')
     .set('Authorization', 'Bearer ' + token)
     .send();
-
-  expect(response.statusCode).toBe(200);
-});
-
-test('Should update community', async () => {
-  const response = await request(app)
-    .patch('/api/v1/communities/' + communityID)
-    .set('Authorization', 'Bearer ' + token)
-    .send({
-      name: 'noddit_community_updated',
-    });
 
   expect(response.statusCode).toBe(200);
 });
