@@ -57,7 +57,7 @@ exports.signup = async (req, res) => {
 exports.signin = async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email });
-  createSendToken(user, 201, res);
+  createSendToken(user, 200, res);
 };
 
 exports.signout = (req, res) => {
