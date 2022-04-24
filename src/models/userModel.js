@@ -108,14 +108,6 @@ const userSchema = new Schema({
     type: [Schema.Types.ObjectId],
     ref: 'Comment',
   },
-  upvotedReplies: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Reply',
-  },
-  downvotedReplies: {
-    type: [Schema.Types.ObjectId],
-    ref: 'Reply',
-  },
 });
 
 userSchema.pre(/^find/, function (next) {
@@ -137,14 +129,6 @@ userSchema.pre(/^find/, function (next) {
   // });
   // this.populate({
   //   path: 'downvotedComments',
-  //   select: '-__v',
-  // });
-  // this.populate({
-  //   path: 'upvotedReplies',
-  //   select: '-__v',
-  // });
-  // this.populate({
-  //   path: 'downvotedReplies',
   //   select: '-__v',
   // });
 

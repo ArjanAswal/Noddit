@@ -31,6 +31,13 @@ const sendErrorDev = (err, res) => {
       });
       break;
 
+    case 'MongoServerError':
+      res.status(400).json({
+        status: err.status,
+        message: 'Invalid data',
+      });
+      break;
+
     case 'JsonWebTokenError':
       res.status(401).json({
         status: err.status,

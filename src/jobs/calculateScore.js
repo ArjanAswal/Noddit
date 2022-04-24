@@ -1,7 +1,6 @@
 const cron = require('node-cron');
 const Post = require('../models/postModel');
 const Comment = require('../models/commentModel');
-const Reply = require('../models/replyModel');
 const logger = require('./../utils/logger');
 
 function calculateCommentScore(comment) {
@@ -79,23 +78,5 @@ module.exports = () =>
       // 3. Update and save the comment
 
       comment.save();
-    });
-
-    // Reply ranking algorithm
-
-    // 1. Get all replies posted 24 hours from now
-
-    const replies = await Reply.find({
-      createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-    });
-
-    // 2. For each reply, calculate the score
-
-    replies.forEach(async (reply) => {
-      reply.score = calculateCommentScore(reply);
-
-      // 3. Update and save the reply
-
-      reply.save();
     });
   });

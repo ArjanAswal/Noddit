@@ -3,9 +3,8 @@ const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 const Community = require('./../models/communityModel');
 const Post = require('./../models/postModel');
-const Comment = require('./../models/commentModel');
-const Reply = require('./../models/replyModel');
 const User = require('./../models/userModel');
+const Comment = require('./../models/commentModel');
 const { clearCache } = require('../utils/redis');
 
 exports.getDocuments = (Model) => async (req, res, next) => {
@@ -54,9 +53,8 @@ exports.getDocument = (Model) => async (req, res, next) => {
 };
 
 exports.createDocument = (Model) => async (req, res, next) => {
-  const { title, description, mediaURLs, content, post, comment, community } =
+  const { title, description, mediaURLs, content, parent, community } =
     req.body;
-  let parent;
   let document;
   const { user } = req;
 
@@ -70,24 +68,18 @@ exports.createDocument = (Model) => async (req, res, next) => {
   }
 
   if (Model.modelName === 'Comment') {
-    parent = await Post.findById(post);
-    if (!parent) throw new Error("Post doesn't exist");
-    document = await Model.create({
-      creator: user.id,
-      post,
-      content,
-      community: parent.community._id,
-    });
-  } else if (Model.modelName === 'Reply') {
-    parent =
-      (await Comment.findById(comment)) ?? (await Reply.findById(comment)); // nesting of replies
+    const parentDoc =
+      (await Post.findById(parent)) ?? (await Comment.findById(parent));
 
-    if (!parent) throw new Error("Comment doesn't exist");
+    if (!parentDoc) throw new Error("Parent doesn't exist");
+    const parentModel = parentDoc?.constructor.modelName;
+
     document = await Model.create({
+      parentModel,
       creator: user.id,
-      comment,
+      parent,
       content,
-      community: parent.community._id,
+      community: parentDoc.community._id,
     });
   } else if (Model.modelName === 'Post') {
     if (!communityDoc) {
@@ -166,9 +158,6 @@ exports.upvoteDocument = (Model) => async (req, res, next) => {
   } else if (Model.modelName === 'Comment') {
     upvotedDocs = 'upvotedComments';
     downvotedDocs = 'downvotedComments';
-  } else if (Model.modelName === 'Reply') {
-    upvotedDocs = 'upvotedReplies';
-    downvotedDocs = 'downvotedReplies';
   }
 
   const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
@@ -224,9 +213,6 @@ exports.downvoteDocument = (Model) => async (req, res, next) => {
   } else if (Model.modelName === 'Comment') {
     upvotedDocs = 'upvotedComments';
     downvotedDocs = 'downvotedComments';
-  } else if (Model.modelName === 'Reply') {
-    upvotedDocs = 'upvotedReplies';
-    downvotedDocs = 'downvotedReplies';
   }
 
   const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
@@ -282,9 +268,6 @@ exports.removeUpvote = (Model) => async (req, res, next) => {
   } else if (Model.modelName === 'Comment') {
     upvotedDocs = 'upvotedComments';
     // downvotedDocs = 'downvotedComments';
-  } else if (Model.modelName === 'Reply') {
-    upvotedDocs = 'upvotedReplies';
-    // downvotedDocs = 'downvotedReplies';
   }
 
   const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
@@ -335,9 +318,6 @@ exports.removeDownvote = (Model) => async (req, res, next) => {
   } else if (Model.modelName === 'Comment') {
     // upvotedDocs = 'upvotedComments';
     downvotedDocs = 'downvotedComments';
-  } else if (Model.modelName === 'Reply') {
-    // upvotedDocs = 'upvotedReplies';
-    downvotedDocs = 'downvotedReplies';
   }
 
   // const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>

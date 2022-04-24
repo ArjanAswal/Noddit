@@ -13,7 +13,6 @@ const healthcheckRouter = require('./routes/healthcheckRouter');
 const userRouter = require('./routes/userRouter');
 const postRouter = require('./routes/postRouter');
 const commentRouter = require('./routes/commentRouter');
-const replyRouter = require('./routes/replyRouter');
 const communityRouter = require('./routes/communityRouter');
 const swaggerRouter = require('./routes/swaggerRouter');
 
@@ -76,7 +75,6 @@ app.use('/healthz', healthcheckRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/comments', commentRouter);
-app.use('/api/v1/replies', replyRouter);
 app.use('/api/v1/communities', communityRouter);
 
 app.all('*', (req) => {

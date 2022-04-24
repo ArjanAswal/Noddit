@@ -1,15 +1,22 @@
 const { Schema, model } = require('mongoose');
 
 const commentSchema = new Schema({
+  parentModel: {
+    type: String,
+    required: true,
+    enum: ['Post', 'Comment'],
+  },
   creator: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: [true, 'Comment must belong to a creator!'],
   },
-  post: {
+  parent: {
     type: Schema.Types.ObjectId,
-    ref: 'Post',
-    required: [true, 'Comment must belong to a post!'],
+    // Instead of a hardcoded model name in `ref`, `refPath` means Mongoose
+    // will look at the `parentModel` property to find the right model.
+    refPath: 'parentModel',
+    required: [true, 'Comment must belong to a parent!'],
   },
   content: {
     type: String,
@@ -44,7 +51,12 @@ commentSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'creator',
     select:
-      '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments -upvotedReplies -downvotedReplies',
+      '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments',
+  });
+
+  this.populate({
+    path: 'parent',
+    select: '-__v -parent',
   });
 
   next();
