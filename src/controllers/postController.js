@@ -33,13 +33,14 @@ exports.removeDownvote = removeDownvote(Post);
 exports.getFeed = async (req, res, next) => {
   const user = await User.findById(req.user.id);
 
-  const features = new APIFeatures(Post.find().where('community').in
-                                       (user.subscribedCommunities),
-                                   req.query)
-                       .filter()
-                       .sort()
-                       .limitFields()
-                       .paginate();
+  const features = new APIFeatures(
+    Post.find().where('community').in(user.subscribedCommunities),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
   const posts = await features.query;
 
   if (!posts) {
@@ -47,9 +48,9 @@ exports.getFeed = async (req, res, next) => {
   }
 
   res.status(200).json({
-    status : 'success',
-    results : posts.length,
-    data : {
+    status: 'success',
+    results: posts.length,
+    data: {
       posts,
     },
   });

@@ -5,11 +5,11 @@ const Community = require('./../models/communityModel');
 const Post = require('./../models/postModel');
 const User = require('./../models/userModel');
 const Comment = require('./../models/commentModel');
-const {clearCache} = require('../utils/redis');
+const { clearCache } = require('../utils/redis');
 
 exports.getDocuments = (Model) => async (req, res, next) => {
   let query = Model.find().cache({
-    key : Model.modelName,
+    key: Model.modelName,
   });
 
   // Don't cache communities
@@ -18,10 +18,10 @@ exports.getDocuments = (Model) => async (req, res, next) => {
   }
 
   const features = new APIFeatures(query, req.query)
-                       .filter()
-                       .sort()
-                       .limitFields()
-                       .paginate();
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
   const documents = await features.query;
 
   if (!documents) {
@@ -29,9 +29,9 @@ exports.getDocuments = (Model) => async (req, res, next) => {
   }
 
   res.status(200).json({
-    status : 'success',
-    results : documents.length,
-    data : {
+    status: 'success',
+    results: documents.length,
+    data: {
       documents,
     },
   });
@@ -45,21 +45,23 @@ exports.getDocument = (Model) => async (req, res, next) => {
   }
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       document,
     },
   });
 };
 
 exports.createDocument = (Model) => async (req, res, next) => {
-  const {title, description, mediaURLs, content, parent, community} = req.body;
+  const { title, description, mediaURLs, content, parent, community } =
+    req.body;
   let document;
-  const {user} = req;
+  const { user } = req;
 
   const communityDoc = await Community.findById(community);
-  const bannedUsers =
-      communityDoc?.bannedUsers?.map((userId) => userId.toString());
+  const bannedUsers = communityDoc?.bannedUsers?.map((userId) =>
+    userId.toString()
+  );
 
   if (bannedUsers?.includes(user.id)) {
     throw new AppError('You are banned from this community', 403);
@@ -67,18 +69,17 @@ exports.createDocument = (Model) => async (req, res, next) => {
 
   if (Model.modelName === 'Comment') {
     const parentDoc =
-        (await Post.findById(parent)) ?? (await Comment.findById(parent));
+      (await Post.findById(parent)) ?? (await Comment.findById(parent));
 
-    if (!parentDoc)
-      throw new Error("Parent doesn't exist");
+    if (!parentDoc) throw new Error("Parent doesn't exist");
     const parentModel = parentDoc?.constructor.modelName;
 
     document = await Model.create({
       parentModel,
-      creator : user.id,
+      creator: user.id,
       parent,
       content,
-      community : parentDoc.community._id,
+      community: parentDoc.community._id,
     });
   } else if (Model.modelName === 'Post') {
     if (!communityDoc) {
@@ -86,7 +87,7 @@ exports.createDocument = (Model) => async (req, res, next) => {
     }
 
     document = await Model.create({
-      creator : user.id,
+      creator: user.id,
       title,
       description,
       mediaURLs,
@@ -99,15 +100,15 @@ exports.createDocument = (Model) => async (req, res, next) => {
   clearCache(Model.modelName);
 
   res.status(201).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       document,
     },
   });
 };
 
 exports.deleteDocument = (Model) => async (req, res, next) => {
-  const {user} = req;
+  const { user } = req;
 
   const document = await Model.findById(req.params.id);
   if (!document) {
@@ -115,11 +116,15 @@ exports.deleteDocument = (Model) => async (req, res, next) => {
   }
 
   const community = await Community.findById(document.community._id);
-  const moderators =
-      community.moderators.map((moderator) => moderator._id.toString());
+  const moderators = community.moderators.map((moderator) =>
+    moderator._id.toString()
+  );
 
-  if (document.creator.toString() !== user.id && user.role !== 'admin' &&
-      !moderators.includes(user.id)) {
+  if (
+    document.creator.toString() !== user.id &&
+    user.role !== 'admin' &&
+    !moderators.includes(user.id)
+  ) {
     throw new AppError('You are not authorized to delete this document', 401);
   }
 
@@ -128,14 +133,14 @@ exports.deleteDocument = (Model) => async (req, res, next) => {
   clearCache(Model.modelName);
 
   res.status(204).json({
-    status : 'success',
-    data : null,
+    status: 'success',
+    data: null,
   });
 };
 
 exports.upvoteDocument = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
-  const {user} = req;
+  const { user } = req;
 
   if (!document) {
     throw new AppError('document not found', 404);
@@ -155,10 +160,12 @@ exports.upvoteDocument = (Model) => async (req, res, next) => {
     downvotedDocs = 'downvotedComments';
   }
 
-  const upvotedDocsIds =
-      userDoc[`${upvotedDocs}`].map((doc) => doc._id.toString());
-  const downvotedDocsIds =
-      userDoc[`${downvotedDocs}`].map((doc) => doc._id.toString());
+  const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
+    doc._id.toString()
+  );
+  const downvotedDocsIds = userDoc[`${downvotedDocs}`].map((doc) =>
+    doc._id.toString()
+  );
 
   if (upvotedDocsIds.includes(document?.id)) {
     throw new AppError('You have already upvoted', 400);
@@ -179,8 +186,8 @@ exports.upvoteDocument = (Model) => async (req, res, next) => {
   }
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       document,
     },
   });
@@ -188,7 +195,7 @@ exports.upvoteDocument = (Model) => async (req, res, next) => {
 
 exports.downvoteDocument = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
-  const {user} = req;
+  const { user } = req;
 
   if (!document) {
     throw new AppError('document not found', 404);
@@ -208,10 +215,12 @@ exports.downvoteDocument = (Model) => async (req, res, next) => {
     downvotedDocs = 'downvotedComments';
   }
 
-  const upvotedDocsIds =
-      userDoc[`${upvotedDocs}`].map((doc) => doc._id.toString());
-  const downvotedDocsIds =
-      userDoc[`${downvotedDocs}`].map((doc) => doc._id.toString());
+  const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
+    doc._id.toString()
+  );
+  const downvotedDocsIds = userDoc[`${downvotedDocs}`].map((doc) =>
+    doc._id.toString()
+  );
 
   if (downvotedDocsIds.includes(document?.id)) {
     throw new AppError('You have already downvoted', 400);
@@ -232,8 +241,8 @@ exports.downvoteDocument = (Model) => async (req, res, next) => {
   }
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       document,
     },
   });
@@ -241,7 +250,7 @@ exports.downvoteDocument = (Model) => async (req, res, next) => {
 
 exports.removeUpvote = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
-  const {user} = req;
+  const { user } = req;
 
   if (!document) {
     throw new AppError('document not found', 404);
@@ -261,8 +270,9 @@ exports.removeUpvote = (Model) => async (req, res, next) => {
     // downvotedDocs = 'downvotedComments';
   }
 
-  const upvotedDocsIds =
-      userDoc[`${upvotedDocs}`].map((doc) => doc._id.toString());
+  const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
+    doc._id.toString()
+  );
   // const downvotedDocsIds = userDoc[`${downvotedDocs}`].map((doc) =>
   //   doc._id.toString()
   // );
@@ -281,8 +291,8 @@ exports.removeUpvote = (Model) => async (req, res, next) => {
   creator.save();
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       document,
     },
   });
@@ -290,7 +300,7 @@ exports.removeUpvote = (Model) => async (req, res, next) => {
 
 exports.removeDownvote = (Model) => async (req, res, next) => {
   const document = await Model.findById(req.params.id);
-  const {user} = req;
+  const { user } = req;
 
   if (!document) {
     throw new AppError('document not found', 404);
@@ -313,8 +323,9 @@ exports.removeDownvote = (Model) => async (req, res, next) => {
   // const upvotedDocsIds = userDoc[`${upvotedDocs}`].map((doc) =>
   //   doc._id.toString()
   // );
-  const downvotedDocsIds =
-      userDoc[`${downvotedDocs}`].map((doc) => doc._id.toString());
+  const downvotedDocsIds = userDoc[`${downvotedDocs}`].map((doc) =>
+    doc._id.toString()
+  );
 
   if (!downvotedDocsIds.includes(document?.id)) {
     throw new AppError('You have not downvoted', 400);
@@ -330,8 +341,8 @@ exports.removeDownvote = (Model) => async (req, res, next) => {
   creator.save();
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       document,
     },
   });

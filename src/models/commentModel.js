@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 /**
  * @swagger
@@ -42,62 +42,62 @@ const {Schema, model} = require('mongoose');
  */
 
 const commentSchema = new Schema({
-  parentModel : {
-    type : String,
-    required : true,
-    enum : [ 'Post', 'Comment' ],
+  parentModel: {
+    type: String,
+    required: true,
+    enum: ['Post', 'Comment'],
   },
-  creator : {
-    type : Schema.Types.ObjectId,
-    ref : 'User',
-    required : [ true, 'Comment must belong to a creator!' ],
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'Comment must belong to a creator!'],
   },
-  parent : {
-    type : Schema.Types.ObjectId,
+  parent: {
+    type: Schema.Types.ObjectId,
     // Instead of a hardcoded model name in `ref`, `refPath` means Mongoose
     // will look at the `parentModel` property to find the right model.
-    refPath : 'parentModel',
-    required : [ true, 'Comment must belong to a parent!' ],
+    refPath: 'parentModel',
+    required: [true, 'Comment must belong to a parent!'],
   },
-  content : {
-    type : String,
-    required : [ true, 'content cannot be empty!' ],
-    trim : true,
-    maxlength : [ 1000, 'content cannot be longer than 1000 characters!' ],
+  content: {
+    type: String,
+    required: [true, 'content cannot be empty!'],
+    trim: true,
+    maxlength: [1000, 'content cannot be longer than 1000 characters!'],
   },
-  community : {
-    type : Schema.Types.ObjectId,
-    ref : 'Community',
-    required : [ true, 'Comment must belong to a community!' ],
+  community: {
+    type: Schema.Types.ObjectId,
+    ref: 'Community',
+    required: [true, 'Comment must belong to a community!'],
   },
-  score : {
-    type : Number,
-    default : 0,
+  score: {
+    type: Number,
+    default: 0,
   },
-  upvotes : {
-    type : Number,
-    default : 0,
+  upvotes: {
+    type: Number,
+    default: 0,
   },
-  downvotes : {
-    type : Number,
-    default : 0,
+  downvotes: {
+    type: Number,
+    default: 0,
   },
-  createdAt : {
-    type : Date,
-    default : Date.now(),
+  createdAt: {
+    type: Date,
+    default: Date.now(),
   },
 });
 
-commentSchema.pre(/^find/, function(next) {
+commentSchema.pre(/^find/, function (next) {
   this.populate({
-    path : 'creator',
-    select :
-        '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments',
+    path: 'creator',
+    select:
+      '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments',
   });
 
   this.populate({
-    path : 'parent',
-    select : '-__v -parent',
+    path: 'parent',
+    select: '-__v -parent',
   });
 
   next();

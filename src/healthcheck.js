@@ -2,10 +2,10 @@ const http = require('http');
 const logger = require('./utils/logger');
 
 const options = {
-  timeout : 2000,
-  host : 'localhost',
-  port : process.env.PORT ?? 3000,
-  path : '/healthz', // must be the same as HEALTHCHECK in Dockerfile
+  timeout: 2000,
+  host: 'localhost',
+  port: process.env.PORT ?? 3000,
+  path: '/healthz', // must be the same as HEALTHCHECK in Dockerfile
 };
 
 const request = http.request(options, (res) => {
@@ -14,7 +14,7 @@ const request = http.request(options, (res) => {
   process.exit();
 });
 
-request.on('error', function(err) {
+request.on('error', function (err) {
   logger.error('ERROR', err);
   process.exit(1);
 });

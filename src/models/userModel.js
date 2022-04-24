@@ -1,5 +1,5 @@
 const validator = require('validator');
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
@@ -42,78 +42,78 @@ const crypto = require('crypto');
  */
 
 const userSchema = new Schema({
-  username : {
-    type : String,
-    required : [ true, 'Please tell us your username!' ],
-    unique : true,
-    trim : true,
-    lowercase : true,
-    minlength : [ 3, 'Username must be at least 3 characters long!' ],
-    maxlength : [ 15, 'Username must be at most 15 characters long!' ],
+  username: {
+    type: String,
+    required: [true, 'Please tell us your username!'],
+    unique: true,
+    trim: true,
+    lowercase: true,
+    minlength: [3, 'Username must be at least 3 characters long!'],
+    maxlength: [15, 'Username must be at most 15 characters long!'],
   },
-  email : {
-    type : String,
-    required : [ true, 'Please provide your email' ],
-    unique : true,
-    trim : true,
-    lowercase : true,
-    validate : [ validator.isEmail, 'Please provide a valid email' ],
+  email: {
+    type: String,
+    required: [true, 'Please provide your email'],
+    unique: true,
+    trim: true,
+    lowercase: true,
+    validate: [validator.isEmail, 'Please provide a valid email'],
   },
-  about : {
-    type : String,
-    default : '',
-    trim : true,
-    maxlength : [ 200, 'About must be at most 200 characters long!' ],
+  about: {
+    type: String,
+    default: '',
+    trim: true,
+    maxlength: [200, 'About must be at most 200 characters long!'],
   },
-  role : {
-    type : String,
-    enum : [ 'user', 'admin' ],
-    default : 'user',
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
   },
-  avatar : String,
-  password : {
-    type : String,
-    required : [ true, 'Please provide a password' ],
-    minlength : 6,
-    select : false,
+  avatar: String,
+  password: {
+    type: String,
+    required: [true, 'Please provide a password'],
+    minlength: 6,
+    select: false,
   },
-  passwordChangedAt : Date,
-  passwordResetToken : String,
-  passwordResetExpires : Date,
-  subscribedCommunities : {
-    type : [ Schema.Types.ObjectId ],
-    ref : 'Community',
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  subscribedCommunities: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Community',
   },
-  karma : {
-    type : Number,
-    default : 0,
+  karma: {
+    type: Number,
+    default: 0,
   },
-  createdAt : {
-    type : Date,
-    default : Date.now(),
+  createdAt: {
+    type: Date,
+    default: Date.now(),
   },
-  upvotedPosts : {
-    type : [ Schema.Types.ObjectId ],
-    ref : 'Post',
+  upvotedPosts: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Post',
   },
-  downvotedPosts : {
-    type : [ Schema.Types.ObjectId ],
-    ref : 'Post',
+  downvotedPosts: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Post',
   },
-  upvotedComments : {
-    type : [ Schema.Types.ObjectId ],
-    ref : 'Comment',
+  upvotedComments: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Comment',
   },
-  downvotedComments : {
-    type : [ Schema.Types.ObjectId ],
-    ref : 'Comment',
+  downvotedComments: {
+    type: [Schema.Types.ObjectId],
+    ref: 'Comment',
   },
 });
 
-userSchema.pre(/^find/, function(next) {
+userSchema.pre(/^find/, function (next) {
   this.populate({
-    path : 'subscribedCommunities',
-    select : '-__v -bannedUsers -creator -moderators -bannedUsers',
+    path: 'subscribedCommunities',
+    select: '-__v -bannedUsers -creator -moderators -bannedUsers',
   });
   // this.populate({
   //   path: 'upvotedPosts',
@@ -136,10 +136,9 @@ userSchema.pre(/^find/, function(next) {
 });
 
 // Change password
-userSchema.pre('save', async function(next) {
+userSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
-  if (!this.isModified('password'))
-    return next();
+  if (!this.isModified('password')) return next();
 
   // Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
@@ -147,24 +146,27 @@ userSchema.pre('save', async function(next) {
   next();
 });
 
-userSchema.pre('save', function(next) {
-  if (!this.isModified('password') || this.isNew)
-    return next();
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
 
-userSchema.methods.correctPassword =
-    async function(candidatePassword, userPassword) {
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 
-userSchema.methods.createPasswordResetToken = function() {
+userSchema.methods.createPasswordResetToken = function () {
   const resetToken = crypto.randomBytes(32).toString('hex');
 
-  this.passwordResetToken =
-      crypto.createHash('sha256').update(resetToken).digest('hex');
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 

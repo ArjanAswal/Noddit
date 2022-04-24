@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
 const Community = require('../models/communityModel');
 const AppError = require('../utils/appError');
-const {getDocuments, getDocument} = require('../controllers/handlerFactory');
+const { getDocuments, getDocument } = require('../controllers/handlerFactory');
 
 exports.getCommunities = getDocuments(Community);
 
@@ -23,11 +23,12 @@ exports.createCommunity = async (req, res, next) => {
 
   if (name.match(/^\w+$/) === null) {
     throw new AppError(
-        'Community name can only contain letters, numbers and underscores',
-        400);
+      'Community name can only contain letters, numbers and underscores',
+      400
+    );
   }
 
-  const {user} = req;
+  const { user } = req;
 
   const subCreatorDoc = await User.findById(user.id).select('karma');
 
@@ -35,13 +36,14 @@ exports.createCommunity = async (req, res, next) => {
     throw new AppError('You need at least 50 karma to create a community', 400);
   }
   // Remove duplicates and add the creator to the list
-  const mods =
-      moderators ? [...new Set(moderators.push(user?.id)) ] : [ user?.id ];
+  const mods = moderators
+    ? [...new Set(moderators.push(user?.id))]
+    : [user?.id];
 
   const community = await Community.create({
     name,
-    creator : user.id,
-    moderators : mods,
+    creator: user.id,
+    moderators: mods,
     bannedUsers,
     rules,
     avatar,
@@ -53,8 +55,8 @@ exports.createCommunity = async (req, res, next) => {
   });
 
   res.status(201).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       community,
     },
   });
@@ -74,7 +76,7 @@ exports.updateCommunity = async (req, res, next) => {
     postFlairs,
   } = req.body;
 
-  const {user} = req;
+  const { user } = req;
 
   const community = await Community.findById(req.params.id);
 
@@ -86,26 +88,30 @@ exports.updateCommunity = async (req, res, next) => {
   }
 
   // Remove duplicates and add the creator to the list
-  const mods =
-      moderators ? [...new Set(moderators.push(user?.id)) ] : [ user?.id ];
+  const mods = moderators
+    ? [...new Set(moderators.push(user?.id))]
+    : [user?.id];
 
-  const newCommunity = await Community.updateOne({id : req.params.id}, {
-    name,
-    moderators : mods,
-    bannedUsers,
-    rules,
-    avatar,
-    cover,
-    description,
-    welcomeMessage,
-    userFlairs,
-    postFlairs,
-  });
+  const newCommunity = await Community.updateOne(
+    { id: req.params.id },
+    {
+      name,
+      moderators: mods,
+      bannedUsers,
+      rules,
+      avatar,
+      cover,
+      description,
+      welcomeMessage,
+      userFlairs,
+      postFlairs,
+    }
+  );
 
   res.status(200).json({
-    status : 'success',
-    data : {
-      community : newCommunity,
+    status: 'success',
+    data: {
+      community: newCommunity,
     },
   });
 };
@@ -117,18 +123,20 @@ exports.deleteCommunity = async (req, res, next) => {
     throw new AppError('Community not found', 404);
   }
 
-  const {user} = req;
+  const { user } = req;
 
   if (community.creator._id.toString() !== user?.id && user.role !== 'admin') {
     throw new AppError(
-        'You are not the creator of this community nor the Admin', 403);
+      'You are not the creator of this community nor the Admin',
+      403
+    );
   }
 
   await community.remove();
 
   res.status(204).json({
-    status : 'success',
-    data : null,
+    status: 'success',
+    data: null,
   });
 };
 
@@ -144,8 +152,9 @@ exports.ban = async (req, res, next) => {
     throw new AppError('Community not found', 404);
   }
 
-  const moderators =
-      community.moderators.map((moderator) => moderator._id.toString());
+  const moderators = community.moderators.map((moderator) =>
+    moderator._id.toString()
+  );
 
   if (!moderators.includes(req.user.id)) {
     throw new AppError('You are not a moderator of this community', 400);
@@ -155,8 +164,9 @@ exports.ban = async (req, res, next) => {
     throw new AppError('Unauthorized', 400);
   }
 
-  const bannedUsers =
-      community?.bannedUsers?.map((userId) => userId.toString());
+  const bannedUsers = community?.bannedUsers?.map((userId) =>
+    userId.toString()
+  );
 
   if (bannedUsers?.includes(req.body.user)) {
     throw new AppError('User is already banned from this community', 400);
@@ -166,8 +176,8 @@ exports.ban = async (req, res, next) => {
   await community.save();
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       community,
     },
   });
@@ -185,19 +195,22 @@ exports.unban = async (req, res, next) => {
     throw new AppError('Community not found', 404);
   }
 
-  const moderators =
-      community.moderators.map((moderator) => moderator._id.toString());
+  const moderators = community.moderators.map((moderator) =>
+    moderator._id.toString()
+  );
 
   if (!moderators.includes(req.user.id)) {
     throw new AppError('You are not a moderator of this community', 400);
   }
 
-  const bannedUsers =
-      community?.bannedUsers?.map((userId) => userId.toString());
+  const bannedUsers = community?.bannedUsers?.map((userId) =>
+    userId.toString()
+  );
 
   if (bannedUsers?.includes(req.body.user)) {
-    community['bannedUsers'] =
-        bannedUsers?.filter((userId) => userId !== req.body.user);
+    community['bannedUsers'] = bannedUsers?.filter(
+      (userId) => userId !== req.body.user
+    );
   } else {
     throw new AppError('User is not banned from this community', 400);
   }
@@ -205,8 +218,8 @@ exports.unban = async (req, res, next) => {
   await community.save();
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       community,
     },
   });
@@ -221,8 +234,9 @@ exports.subscribe = async (req, res, next) => {
 
   const user = await User.findById(req.user.id);
 
-  const subscribedCommunities =
-      user.subscribedCommunities.map((community) => community._id.toString());
+  const subscribedCommunities = user.subscribedCommunities.map((community) =>
+    community._id.toString()
+  );
 
   if (subscribedCommunities?.includes(community._id.toString())) {
     throw new AppError('User is already subscribed to this community', 400);
@@ -236,8 +250,8 @@ exports.subscribe = async (req, res, next) => {
   community.save();
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       user,
     },
   });
@@ -252,8 +266,9 @@ exports.unsubscribe = async (req, res, next) => {
 
   const user = await User.findById(req.user.id);
 
-  const subscribedCommunities =
-      user.subscribedCommunities.map((community) => community._id.toString());
+  const subscribedCommunities = user.subscribedCommunities.map((community) =>
+    community._id.toString()
+  );
 
   if (!subscribedCommunities?.includes(community._id.toString())) {
     throw new AppError('User not subscribed to this community', 400);
@@ -267,8 +282,8 @@ exports.unsubscribe = async (req, res, next) => {
   community.save();
 
   res.status(200).json({
-    status : 'success',
-    data : {
+    status: 'success',
+    data: {
       user,
     },
   });
