@@ -1,5 +1,46 @@
 const { Schema, model } = require('mongoose');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Comment:
+ *       type: object
+ *       required:
+ *       - _id
+ *       - creator
+ *       - parent
+ *       - content
+ *       - community
+ *       properties:
+ *         _id:
+ *           type: string
+ *           uniqueItems: true
+ *         creator:
+ *           type: string
+ *           description: The user who created the comment
+ *         parent:
+ *           type: string
+ *           description: The parent of the comment
+ *         content:
+ *           type: string
+ *         community:
+ *           type: string
+ *         upvotes:
+ *           type: number
+ *         downvotes:
+ *           type: number
+ *         score:
+ *           type: number
+ *           description: The score of the comment
+ *         createdAt:
+ *           type: string
+ *           description: The date the comment was created
+ *     Comments:
+ *       type: array
+ *       "$ref": "#/components/schemas/Comment"
+ */
+
 const commentSchema = new Schema({
   parentModel: {
     type: String,
