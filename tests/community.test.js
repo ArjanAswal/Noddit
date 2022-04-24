@@ -105,5 +105,5 @@ test('Should delete community', async () => {
     .delete('/api/v1/communities/' + communityID)
     .set('Authorization', 'Bearer ' + token);
 
-  expect(response.statusCode).toBe(200);
+  expect(response.statusCode).toBe(204);
 });

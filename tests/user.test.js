@@ -41,7 +41,7 @@ test('Should signin existing user', async () => {
       email: '1@noddit.com',
       password: 'noddit123',
     })
-    .expect(201);
+    .expect(200);
 
   expect(response.body.data.user.username).toBe('nodditor1');
 });
@@ -92,5 +92,5 @@ test('Should update password of existing user', async () => {
       email: '1@noddit.com',
       password: 'newPassword',
     })
-    .expect(201);
+    .expect(200);
 });
