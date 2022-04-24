@@ -36,7 +36,7 @@ jobs:
         uses: supercharge/redis-github-action@1.4.0
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --target test --tag arjanaswal/noddit:$(date +%s)
+        run: docker build . --file Dockerfile --target test --tag arjanaswal/noddit:latest
 
       - name: Run the Docker image
-        run: docker run --rm -p 3000:3000 arjanaswal/noddit:$(date +%s)
+        run: docker run --rm -p 3000:3000 arjanaswal/noddit:latest
