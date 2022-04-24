@@ -3,7 +3,7 @@ const passport = require('passport');
 require('express-async-errors');
 const authController = require('./../controllers/authController');
 const userController = require('./../controllers/userController');
-const { protect } = require('../controllers/authController');
+const {protect} = require('../controllers/authController');
 require('./../controllers/passportController');
 
 const router = express.Router();
@@ -90,11 +90,8 @@ router.post('/signup', authController.signup);
  *               message: Something went very wrong!
  */
 
-router.post(
-  '/signin',
-  passport.authenticate('local', { session: false }),
-  authController.signin
-);
+router.post('/signin', passport.authenticate('local', {session : false}),
+            authController.signin);
 
 /**
  * @swagger

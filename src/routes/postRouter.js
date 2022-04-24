@@ -1,7 +1,7 @@
 const express = require('express');
 const postController = require('../controllers/postController');
 const router = express.Router();
-const { protect } = require('../controllers/authController');
+const {protect} = require('../controllers/authController');
 
 /**
  * @swagger
@@ -89,10 +89,9 @@ const { protect } = require('../controllers/authController');
  *               message: Unauthorized
  */
 
-router
-  .route('/')
-  .get(postController.getPosts)
-  .post(protect, postController.createPost);
+router.route('/')
+    .get(postController.getPosts)
+    .post(protect, postController.createPost);
 
 /**
  * @swagger
@@ -193,10 +192,9 @@ router.route('/feed').get(protect, postController.getFeed);
  *               message: Unauthorized
  */
 
-router
-  .route('/:id')
-  .get(postController.getPost)
-  .delete(protect, postController.deletePost);
+router.route('/:id')
+    .get(postController.getPost)
+    .delete(protect, postController.deletePost);
 
 /**
  * @swagger
@@ -263,10 +261,9 @@ router
  *               message: Unauthorized
  */
 
-router
-  .route('/:id/upvote')
-  .post(protect, postController.upvotePost)
-  .delete(protect, postController.removeUpvote);
+router.route('/:id/upvote')
+    .post(protect, postController.upvotePost)
+    .delete(protect, postController.removeUpvote);
 
 /**
  * @swagger
@@ -333,9 +330,8 @@ router
  *               message: Unauthorized
  */
 
-router
-  .route('/:id/downvote')
-  .post(protect, postController.downvotePost)
-  .delete(protect, postController.removeDownvote);
+router.route('/:id/downvote')
+    .post(protect, postController.downvotePost)
+    .delete(protect, postController.removeDownvote);
 
 module.exports = router;

@@ -19,64 +19,64 @@ function calculateCommentScore(comment) {
   }
 }
 
-module.exports = () =>
-  cron.schedule('0 */15 * * * *', async function () {
-    logger.info('Calculating score');
+module.exports = () => cron.schedule('0 */15 * * * *', async function() {
+  logger.info('Calculating score');
 
-    // Calculate score based on Reddit's hot ranking algorithm (https://medium.com/hacking-and-gonzo/how-reddit-ranking-algorithms-work-ef111e33d0d9)
+  // Calculate score based on Reddit's hot ranking algorithm
+  // (https://medium.com/hacking-and-gonzo/how-reddit-ranking-algorithms-work-ef111e33d0d9)
 
-    // Post ranking algorithm
+  // Post ranking algorithm
 
-    // 1. Get all posts posted 24 hours from now
+  // 1. Get all posts posted 24 hours from now
 
-    const posts = await Post.find({
-      createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-    });
-
-    // 2. For each post, calculate the score
-
-    posts.forEach(async (post) => {
-      const t = (Date.now() - post.createdAt) / 1000;
-      const x = post.upvotes - post.downvotes;
-      let y, z;
-      if (x > 0) {
-        y = 1;
-      } else if (x < 0) {
-        y = -1;
-      } else {
-        y = 0;
-      }
-
-      if (x >= 1) {
-        z = x;
-      } else {
-        z = 1;
-      }
-
-      const score = Math.log10(z) + (y * t) / 45000;
-
-      post.score = score;
-
-      // 3. Update and save the post
-
-      post.save();
-    });
-
-    // Comment ranking algorithm
-
-    // 1. Get all comments posted 24 hours from now
-
-    const comments = await Comment.find({
-      createdAt: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-    });
-
-    // 2. For each comment, calculate the score
-
-    comments.forEach(async (comment) => {
-      comment.score = calculateCommentScore(comment);
-
-      // 3. Update and save the comment
-
-      comment.save();
-    });
+  const posts = await Post.find({
+    createdAt : {$gt : new Date(Date.now() - 24 * 60 * 60 * 1000)},
   });
+
+  // 2. For each post, calculate the score
+
+  posts.forEach(async (post) => {
+    const t = (Date.now() - post.createdAt) / 1000;
+    const x = post.upvotes - post.downvotes;
+    let y, z;
+    if (x > 0) {
+      y = 1;
+    } else if (x < 0) {
+      y = -1;
+    } else {
+      y = 0;
+    }
+
+    if (x >= 1) {
+      z = x;
+    } else {
+      z = 1;
+    }
+
+    const score = Math.log10(z) + (y * t) / 45000;
+
+    post.score = score;
+
+    // 3. Update and save the post
+
+    post.save();
+  });
+
+  // Comment ranking algorithm
+
+  // 1. Get all comments posted 24 hours from now
+
+  const comments = await Comment.find({
+    createdAt : {$gt : new Date(Date.now() - 24 * 60 * 60 * 1000)},
+  });
+
+  // 2. For each comment, calculate the score
+
+  comments.forEach(async (comment) => {
+    comment.score = calculateCommentScore(comment);
+
+    // 3. Update and save the comment
+
+    comment.save();
+  });
+});
