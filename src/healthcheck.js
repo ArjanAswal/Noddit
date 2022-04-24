@@ -8,7 +8,7 @@ const options = {
   path: '/healthz', // must be the same as HEALTHCHECK in Dockerfile
 };
 
-const request = http.request(options, res => {
+const request = http.request(options, (res) => {
   logger.info('STATUS: ' + res.statusCode);
   process.exitCode = res.statusCode === 200 ? 0 : 1;
   process.exit();

@@ -1,0 +1,42 @@
+name: Noddit CI
+
+on:
+  # push:
+  #   branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    env:
+      CI: true
+      SERVER_URL: http://127.0.0.1
+      NODE_ENV: production
+      MONGO_URL: mongodb://172.17.0.1:27017/noddit-test
+      REDIS_URL: redis://172.17.0.1:6379
+      NGINX_URL: nginx
+      PORT: 3000
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRES_IN: 90d
+      JWT_COOKIE_EXPIRES_IN: 90
+      EMAIL_FROM_NAME: ${{ secrets.EMAIL_FROM_NAME }}
+      EMAIL_FROM_ADDRESS: ${{ secrets.EMAIL_FROM_ADDRESS }}
+      SENDGRID_USERNAME: ${{ secrets.SENDGRID_USERNAME }}
+      SENDGRID_PASSWORD: ${{ secrets.SENDGRID_PASSWORD }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: MongoDB in GitHub Actions
+        uses: supercharge/mongodb-github-action@1.7.0
+
+      - name: Redis Server in GitHub Actions
+        uses: supercharge/redis-github-action@1.4.0
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --target test --tag arjanaswal/noddit:latest
+
+      - name: Run the Docker image
+        run: docker run -e SERVER_URL=$SERVER_URL -e NODE_ENV=$NODE_ENV -e MONGO_URL=$MONGO_URL -e REDIS_URL=$REDIS_URL -e NGINX_URL=$NGINX_URL -e PORT=$PORT -e JWT_SECRET=$JWT_SECRET -e JWT_EXPIRES_IN=$JWT_EXPIRES_IN -e JWT_COOKIE_EXPIRES_IN=$JWT_COOKIE_EXPIRES_IN -e EMAIL_FROM_NAME="$EMAIL_FROM_NAME" -e EMAIL_FROM_ADDRESS=$EMAIL_FROM_ADDRESS -e SENDGRID_USERNAME=$SENDGRID_USERNAME -e SENDGRID_PASSWORD=$SENDGRID_PASSWORD --rm -p 3000:3000 arjanaswal/noddit:latest

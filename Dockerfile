@@ -41,11 +41,11 @@ RUN npm install --only=development
 CMD ["npm", "start"]
 
 
-FROM dev as ci
+FROM dev as test
 # copy in our source code last, as it changes the most
 # copy in as node user, so permissions match what we need
 COPY --chown=node:node . .
-RUN npm run ci
+CMD ["npm", "test"]
 # you would also run your tests here
 
 
