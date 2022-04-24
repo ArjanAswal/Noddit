@@ -3,6 +3,44 @@ const { Schema, model } = require('mongoose');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *       - _id
+ *       - username
+ *       - email
+ *       properties:
+ *         _id:
+ *           type: string
+ *           uniqueItems: true
+ *         username:
+ *           type: string
+ *           description: The username of the user
+ *         email:
+ *           type: string
+ *           description: The email address of the user
+ *         about:
+ *           type: string
+ *         avatar:
+ *           type: string
+ *         subscribedCommunities:
+ *           type: array
+ *           "$ref": "#/components/schemas/Community"
+ *         karma:
+ *           type: number
+ *           description: The karma of the user
+ *         createdAt:
+ *           type: string
+ *           description: The date the user was created
+ *     Users:
+ *       type: array
+ *       "$ref": "#/components/schemas/User"
+ */
+
 const userSchema = new Schema({
   username: {
     type: String,
