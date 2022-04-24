@@ -6,7 +6,7 @@ const { protect } = require('../controllers/authController');
 /**
  * @swagger
  * tags:
- * - name: Posts
+ * - name: Post
  *   description: API for Posts
  */
 
@@ -15,7 +15,7 @@ const { protect } = require('../controllers/authController');
  * "/posts":
  *   get:
  *     tags:
- *     - Posts
+ *     - Post
  *     description: Get posts
  *     produces:
  *     - application/json
@@ -28,6 +28,14 @@ const { protect } = require('../controllers/authController');
  *       in: query
  *       description: How many posts to return
  *       type: number
+ *     - name: page
+ *       in: query
+ *       description: Number of pages
+ *       type: number
+ *     - name: creator
+ *       in: query
+ *       description: The creator of the community
+ *       type: string
  *     responses:
  *       '200':
  *         description: Returns the posts
@@ -46,7 +54,7 @@ const { protect } = require('../controllers/authController');
  *               message: Something went very wrong!
  *   post:
  *     tags:
- *     - Posts
+ *     - Post
  *	    security:
  *	     - jwt: []
  *     description: Create a new post
@@ -91,7 +99,7 @@ router
  * "/posts/feed":
  *   get:
  *     tags:
- *     - Posts
+ *     - Post
  *	    security:
  *	     - jwt: []
  *     description: Get User feed
@@ -131,7 +139,7 @@ router.route('/feed').get(protect, postController.getFeed);
  * "/posts/{id}":
  *   get:
  *     tags:
- *     - Posts
+ *     - Post
  *     description: Get a specific post
  *     produces:
  *     - application/json
@@ -159,7 +167,7 @@ router.route('/feed').get(protect, postController.getFeed);
  *               message: Resource not found
  *   delete:
  *     tags:
- *     - Posts
+ *     - Post
  *	    security:
  *	     - jwt: []
  *     description: Delete a specific post
@@ -195,7 +203,7 @@ router
  * "/posts/{id}/upvote":
  *   post:
  *     tags:
- *     - Posts
+ *     - Post
  *	    security:
  *	     - jwt: []
  *     description: Upvote a post
@@ -225,7 +233,7 @@ router
  *               message: Unauthorized
  *   delete:
  *     tags:
- *     - Posts
+ *     - Post
  *	    security:
  *	     - jwt: []
  *     description: Remove an upvote from a specific post
@@ -265,7 +273,7 @@ router
  * "/posts/{id}/downvote":
  *   post:
  *     tags:
- *     - Posts
+ *     - Post
  *	    security:
  *	     - jwt: []
  *     description: Downvote a post
@@ -295,7 +303,7 @@ router
  *               message: Unauthorized
  *   delete:
  *     tags:
- *     - Posts
+ *     - Post
  *	    security:
  *	     - jwt: []
  *     description: Remove a downvote from a specific post

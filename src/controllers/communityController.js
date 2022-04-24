@@ -81,7 +81,7 @@ exports.updateCommunity = async (req, res, next) => {
   const community = await Community.findById(req.params.id);
 
   if (!community) {
-    throw new AppError('Community does not exist', 400);
+    throw new AppError('Community does not exist', 404);
   }
   if (community?.creator?._id.toString() !== user.id) {
     throw new AppError('You are not the creator of this community', 400);
@@ -134,7 +134,7 @@ exports.deleteCommunity = async (req, res, next) => {
 
   await community.remove();
 
-  res.status(200).json({
+  res.status(204).json({
     status: 'success',
     data: null,
   });
