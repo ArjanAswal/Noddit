@@ -1,0 +1,42 @@
+name: Noddit CI
+
+on:
+  # push:
+  #   branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    env:
+      CI: true
+      SERVER_URL: http://127.0.0.1
+      NODE_ENV: production
+      MONGO_URL: mongodb://docker.for.mac.localhost:27017/noddit-test
+      REDIS_URL: redis://docker.for.mac.localhost:6379
+      NGINX_URL: nginx
+      PORT: 3000
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_EXPIRES_IN: 90d
+      JWT_COOKIE_EXPIRES_IN: 90
+      EMAIL_FROM_NAME: ${{ secrets.EMAIL_FROM_NAME }}
+      EMAIL_FROM_ADDRESS: ${{ secrets.EMAIL_FROM_ADDRESS }}
+      SENDGRID_USERNAME: ${{ secrets.SENDGRID_USERNAME }}
+      SENDGRID_PASSWORD: ${{ secrets.SENDGRID_PASSWORD }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: MongoDB in GitHub Actions
+        uses: supercharge/mongodb-github-action@1.7.0
+
+      - name: Redis Server in GitHub Actions
+        uses: supercharge/redis-github-action@1.4.0
+
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --target test --tag arjanaswal/noddit:$(date +%s)
+
+      - name: Run the Docker image
+        run: docker run --rm -p 3000:3000 arjanaswal/noddit:$(date +%s)

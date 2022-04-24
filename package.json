@@ -8,7 +8,7 @@
   "main": "./src/server.js",
   "scripts": {
     "start": "nodemon ./src/server.js",
-    "test": "DOTENV_CONFIG_PATH=./.env.test jest --setupFiles dotenv/config --runInBand --forceExit"
+    "test": "jest --runInBand --forceExit"
   },
   "jest": {
     "testEnvironment": "node"
