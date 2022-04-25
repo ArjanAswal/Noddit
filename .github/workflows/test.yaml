@@ -1,8 +1,6 @@
 name: Noddit CI
 
 on:
-  # push:
-  #   branches: [main]
   pull_request:
     branches: [main]
 
@@ -36,7 +34,7 @@ jobs:
         uses: supercharge/redis-github-action@1.4.0
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --target test --tag arjanaswal/noddit:latest
+        run: docker build . --file Dockerfile --target test --tag arjanaswal/noddit:test
 
-      - name: Run the Docker image
-        run: docker run -e SERVER_URL=$SERVER_URL -e NODE_ENV=$NODE_ENV -e MONGO_URL=$MONGO_URL -e REDIS_URL=$REDIS_URL -e NGINX_URL=$NGINX_URL -e PORT=$PORT -e JWT_SECRET=$JWT_SECRET -e JWT_EXPIRES_IN=$JWT_EXPIRES_IN -e JWT_COOKIE_EXPIRES_IN=$JWT_COOKIE_EXPIRES_IN -e EMAIL_FROM_NAME="$EMAIL_FROM_NAME" -e EMAIL_FROM_ADDRESS=$EMAIL_FROM_ADDRESS -e SENDGRID_USERNAME=$SENDGRID_USERNAME -e SENDGRID_PASSWORD=$SENDGRID_PASSWORD --rm -p 3000:3000 arjanaswal/noddit:latest
+      - name: Run the Docker image for tests
+        run: docker run -e SERVER_URL=$SERVER_URL -e NODE_ENV=$NODE_ENV -e MONGO_URL=$MONGO_URL -e REDIS_URL=$REDIS_URL -e NGINX_URL=$NGINX_URL -e PORT=$PORT -e JWT_SECRET=$JWT_SECRET -e JWT_EXPIRES_IN=$JWT_EXPIRES_IN -e JWT_COOKIE_EXPIRES_IN=$JWT_COOKIE_EXPIRES_IN -e EMAIL_FROM_NAME="$EMAIL_FROM_NAME" -e EMAIL_FROM_ADDRESS=$EMAIL_FROM_ADDRESS -e SENDGRID_USERNAME=$SENDGRID_USERNAME -e SENDGRID_PASSWORD=$SENDGRID_PASSWORD --rm -p 3000:3000 arjanaswal/noddit:test

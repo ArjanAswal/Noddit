@@ -1,0 +1,12 @@
+{
+  "AWSEBDockerrunVersion": "2",
+  "containerDefinitions": [
+    {
+      "name": "Noddit",
+      "image": "arjanaswal/noddit:latest",
+      "hostname": "app",
+      "essential": true,
+      "memory": 128
+    }
+  ]
+}

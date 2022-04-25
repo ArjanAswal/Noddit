@@ -11,11 +11,13 @@ process.on('uncaughtException', (err) => {
 });
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
-  logger.info('DB connection successful!');
+  logger.info('MongoDB connection successful!');
   // Schedule cron job
   calculateScore();
   // Connect to redis
-  connectRedis();
+  connectRedis().then(() => {
+    logger.info('Redis connection successful!');
+  });
 });
 
 const port = process.env.PORT ?? 3000;

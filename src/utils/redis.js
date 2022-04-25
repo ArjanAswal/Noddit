@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 const redis = require('redis');
 const util = require('util');
 
-const redisUrl = process.env.REDIS_URL;
+let redisUrl = process.env.REDIS_URL;
+
+if (process.env.NODE_ENV === 'production' && process.env.REDIS_PASSWORD) {
+  redisUrl = `redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}`;
+}
+
 const client = redis.createClient({
   url: redisUrl,
   legacyMode: true,
