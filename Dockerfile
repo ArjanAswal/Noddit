@@ -51,6 +51,8 @@ CMD ["npm", "test"]
 
 # this only has minimal deps and files
 FROM base as prod
+# copy in as node user, so permissions match what we need
+COPY --chown=node:node . .
 # check every 30s to ensure this service returns HTTP 200
 HEALTHCHECK --interval=600s CMD node ./src/healthcheck.js
 CMD ["node", "./src/server.js"]
