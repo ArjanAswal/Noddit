@@ -4,7 +4,7 @@ const util = require('util');
 
 let redisUrl = process.env.REDIS_URL;
 
-if (process.env.NODE_ENV == 'production') {
+if (process.env.NODE_ENV === 'production' && process.env.REDIS_PASSWORD) {
   redisUrl = `redis://default:${process.env.REDIS_PASSWORD}@${process.env.REDIS_URL}`;
 }
 
