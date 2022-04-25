@@ -56,5 +56,5 @@ jobs:
           application_name: Noddit
           environment_name: Noddit-env
           version_label: 'docker-app-${{ steps.format-time.outputs.replaced }}'
-          region: us-west-2
+          region: us-east-1
           deployment_package: deploy.zip
