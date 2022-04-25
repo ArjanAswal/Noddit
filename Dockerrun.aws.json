@@ -1,12 +1,12 @@
 {
-  "AWSEBDockerrunVersion": "2",
-  "containerDefinitions": [
+  "AWSEBDockerrunVersion": "1",
+  "Image": {
+    "Name": "arjanaswal/noddit:latest",
+    "Update": "true"
+  },
+  "Ports": [
     {
-      "name": "Noddit",
-      "image": "arjanaswal/noddit:latest",
-      "hostname": "app",
-      "essential": true,
-      "memory": 128
+      "ContainerPort": "80"
     }
   ]
 }
