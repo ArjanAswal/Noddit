@@ -64,17 +64,17 @@ For example, if you are running this app on apple M1 air then you should run 8 d
 
 ## Project Structure
 
-| Name                | Description                                                  |
-| ------------------- | ------------------------------------------------------------ |
-| **wiki/**           | You can add project documentation and instructions file here |
-| **src/**            | Source files                                                 |
-| **src/controllers** | The controllers of the express app                           |
-| **src/jobs**        | The cron jobs used in the app                                |
-| **src/models**      | Mongoose models with swagger documentation                   |
-| **src/routes/**     | Express REST API routes with swagger documentation           |
-| **src/utils**       | Reusable utilises and library source code like a logger      |
-| **src/views/**      | Represents current model state                               |
-| **tests/**          | Test suites are placed here                                  |
+| Name                | Description                                             |
+| ------------------- | ------------------------------------------------------- |
+| **wiki/**           | Project documentation and instructions to be added here |
+| **src/**            | Source files                                            |
+| **src/controllers** | The controllers of the express app                      |
+| **src/jobs**        | The cron jobs used in the app                           |
+| **src/models**      | Mongoose models with swagger documentation              |
+| **src/routes/**     | Express REST API routes with swagger documentation      |
+| **src/utils**       | Reusable utilises and library source code like a logger |
+| **src/views/**      | Represents current model state                          |
+| **tests/**          | Test suites are placed here                             |
 
 ## Demo
 
