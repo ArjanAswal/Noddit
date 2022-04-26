@@ -1,5 +1,6 @@
 node_modules/
 coverage/
+wiki/
 .env
 .aws
 .npmrc

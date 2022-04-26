@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/ArjanAswal/Noddit#readme",
   "dependencies": {
+    "aws-sdk": "^2.1121.0",
     "axios": "^0.26.1",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
@@ -50,6 +51,7 @@
     "redis": "^4.0.6",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.3.0",
+    "uuid": "^8.3.2",
     "validator": "^13.7.0",
     "winston": "^3.7.2",
     "xss-clean": "^0.1.1"

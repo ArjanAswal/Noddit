@@ -10,6 +10,7 @@ const compression = require('compression');
 
 require('express-async-errors');
 const healthcheckRouter = require('./routes/healthcheckRouter');
+const uploadRouter = require('./routes/uploadRouter');
 const userRouter = require('./routes/userRouter');
 const postRouter = require('./routes/postRouter');
 const commentRouter = require('./routes/commentRouter');
@@ -72,6 +73,9 @@ app.use('/', swaggerRouter);
 app.use('/healthz', healthcheckRouter);
 
 // App Routes
+
+app.use('/api/v1/upload', uploadRouter);
+
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/comments', commentRouter);
