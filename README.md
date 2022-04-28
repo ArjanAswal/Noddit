@@ -1,5 +1,7 @@
 # Noddit
 
+![Noddit CI](https://github.com/arjanaswal/noddit/actions/workflows/test.yaml/badge.svg) ![Noddit CD](https://github.com/arjanaswal/noddit/actions/workflows/deploy.yaml/badge.svg) [![HitCount](https://hits.dwyl.com/arjanaswal/noddit.svg)](http://hits.dwyl.com/arjanaswal/noddit) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 Noddit is an Open Source Reddit clone implemented in Node.js.
 Noddit is a RESTful API that conforms to the constraints of REST architectural style and allows for interaction with RESTful web services.
 
@@ -52,7 +54,7 @@ Then run the following command:
 
 `docker-compose up`
 
-## Workflow
+## CI/CD Workflow
 
 ![Workflow](https://github.com/arjanaswal/noddit/blob/main/wiki/workflow.png?raw=true)
 
@@ -60,7 +62,7 @@ Then run the following command:
 
 Since Node.js is single threaded, the best way to get the most optimal performance is to run N number of Docker instances of the node server where N is the number of logical CPU cores of the device on which the server is running. Then, Nginx will automatically balance the load by round robin distribution algorithm.
 
-For example, if you are running this app on apple M1 air then you should run 8 docker instances of server. Since m1 air has an 8-core CPU consisting of four high-performance cores and four high-efficiency cores
+For example, if you are running this app on apple M1 air then you should run 8 docker instances of server. Since m1 air has an 8-core CPU consisting of four high-performance cores and four high-efficiency cores.
 
 ## Project Structure
 
