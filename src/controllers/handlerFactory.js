@@ -8,26 +8,7 @@ const Comment = require('./../models/commentModel');
 const { clearCache } = require('../utils/redis');
 
 exports.getDocuments = (Model) => async (req, res, next) => {
-  let query = Model.find().cache({
-    key: Model.modelName,
-  });
-
-  // Don't cache communities
-  if (Model.modelName === 'Community') {
-    query = Model.find();
-  } else if (Model.modelName === 'Comment') {
-    // Ensure population happens explicitly
-    query = query
-      .populate({
-        path: 'creator',
-        select:
-          '-__v -passwordChangedAt -email -password -passwordChangedAt -resetPasswordToken -resetPasswordExpires -upvotedPosts -downvotedPosts -upvotedComments -downvotedComments',
-      })
-      .populate({
-        path: 'parent',
-        select: '-__v -parent',
-      });
-  }
+  let query = Model.find();
 
   const features = new APIFeatures(query, req.query)
     .filter()
