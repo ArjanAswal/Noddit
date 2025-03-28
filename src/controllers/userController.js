@@ -1,6 +1,7 @@
 require('express-async-errors');
 const AppError = require('../utils/appError');
 const User = require('../models/userModel');
+const { getDocuments } = require('./handlerFactory');
 
 exports.getUser = async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -16,3 +17,5 @@ exports.getUser = async (req, res) => {
     },
   });
 };
+
+exports.getAllUsers = getDocuments(User);

@@ -102,6 +102,7 @@ exports.createDocument = (Model) => async (req, res, next) => {
 
 exports.deleteDocument = (Model) => async (req, res, next) => {
   const { user } = req;
+  const userDoc = await User.findById(user?.id);
 
   const document = await Model.findById(req.params.id);
   if (!document) {
@@ -115,7 +116,7 @@ exports.deleteDocument = (Model) => async (req, res, next) => {
 
   if (
     document.creator.toString() !== user.id &&
-    user.role !== 'admin' &&
+    userDoc?.role !== 'admin' &&
     !moderators.includes(user.id)
   ) {
     throw new AppError('You are not authorized to delete this document', 401);

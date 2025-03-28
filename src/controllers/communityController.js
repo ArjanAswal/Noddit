@@ -32,7 +32,7 @@ exports.createCommunity = async (req, res, next) => {
 
   const subCreatorDoc = await User.findById(user.id).select('karma');
 
-  if (subCreatorDoc?.karma < 49) {
+  if (subCreatorDoc?.role !== 'admin' && subCreatorDoc?.karma < 49) {
     throw new AppError('You need at least 50 karma to create a community', 400);
   }
   // Remove duplicates and add the creator to the list
