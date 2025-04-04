@@ -86,7 +86,7 @@ const userSchema = new Schema({
   },
   karma: {
     type: Number,
-    default: 0,
+    default: 100,
   },
   createdAt: {
     type: Date,
