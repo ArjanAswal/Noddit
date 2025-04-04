@@ -17,6 +17,7 @@ services:
     depends_on:
       - app1
       - app2
+    restart: always
 
   mongodb:
     image: mongo:4.2.8
@@ -30,11 +31,13 @@ services:
       start_period: 10s
       timeout: 4s
       retries: 3
+    restart: always
 
   redis:
     image: redis:7.0-rc-alpine
     ports:
       - "6379:6379"
+    restart: always
 
   app1:
     build:
@@ -57,6 +60,7 @@ services:
     depends_on:
       - mongodb
       - redis
+    restart: always
 
   app2:
     build:
@@ -77,7 +81,7 @@ services:
     depends_on:
       - mongodb
       - redis
+    restart: always
 
 volumes:
   data:
-
