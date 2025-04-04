@@ -49,7 +49,11 @@ exports.signup = async (req, res) => {
   const newUser = await User.create({ username, email, password });
 
   const url = `${req.protocol}://${req.get('host')}/me`;
-  new Email(newUser, url).sendWelcome();
+  try {
+    new Email(newUser, url).sendWelcome();
+  } catch (error) {
+    console.log(error);
+  }
 
   createSendToken(newUser, 201, res);
 };
