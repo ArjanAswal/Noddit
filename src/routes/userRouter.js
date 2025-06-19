@@ -90,11 +90,7 @@ router.post('/signup', authController.signup);
  *               message: Something went very wrong!
  */
 
-router.post(
-  '/signin',
-  passport.authenticate('local', { session: false }),
-  authController.signin
-);
+router.post('/signin', authController.signin);
 
 /**
  * @swagger

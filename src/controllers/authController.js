@@ -59,8 +59,18 @@ exports.signup = async (req, res) => {
 };
 
 exports.signin = async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    throw new AppError('Please provide email and password', 400);
+  }
+
+  const user = await User.findOne({ email }).select('+password');
+
+  if (!user || !(await user.correctPassword(password, user.password))) {
+    throw new AppError('Incorrect email or password', 401);
+  }
+
   createSendToken(user, 200, res);
 };
 
