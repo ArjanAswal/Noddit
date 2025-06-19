@@ -264,4 +264,6 @@ router.patch('/updatePassword', protect, authController.updatePassword);
 
 router.route('/:id').get(userController.getUser);
 
+router.route('/').get(userController.getAllUsers);
+
 module.exports = router;

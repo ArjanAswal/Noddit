@@ -8,14 +8,7 @@ const Comment = require('./../models/commentModel');
 const { clearCache } = require('../utils/redis');
 
 exports.getDocuments = (Model) => async (req, res, next) => {
-  let query = Model.find().cache({
-    key: Model.modelName,
-  });
-
-  // Don't cache communities
-  if (Model.modelName === 'Community') {
-    query = Model.find();
-  }
+  let query = Model.find();
 
   const features = new APIFeatures(query, req.query)
     .filter()
@@ -109,6 +102,7 @@ exports.createDocument = (Model) => async (req, res, next) => {
 
 exports.deleteDocument = (Model) => async (req, res, next) => {
   const { user } = req;
+  const userDoc = await User.findById(user?.id);
 
   const document = await Model.findById(req.params.id);
   if (!document) {
@@ -122,7 +116,7 @@ exports.deleteDocument = (Model) => async (req, res, next) => {
 
   if (
     document.creator.toString() !== user.id &&
-    user.role !== 'admin' &&
+    userDoc?.role !== 'admin' &&
     !moderators.includes(user.id)
   ) {
     throw new AppError('You are not authorized to delete this document', 401);

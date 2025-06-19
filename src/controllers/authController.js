@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('express-async-errors');
 const User = require('../models/userModel');
-const Email = require('../utils/email');
+// const Email = require('../utils/email');
 const AppError = require('../utils/appError');
 const crypto = require('crypto');
 const passport = require('passport');
@@ -48,8 +48,12 @@ exports.signup = async (req, res) => {
   }
   const newUser = await User.create({ username, email, password });
 
-  const url = `${req.protocol}://${req.get('host')}/me`;
-  new Email(newUser, url).sendWelcome();
+  // const url = `${req.protocol}://${req.get('host')}/me`;
+  // try {
+  //   new Email(newUser, url).sendWelcome();
+  // } catch (error) {
+  //   console.log(error);
+  // }
 
   createSendToken(newUser, 201, res);
 };
