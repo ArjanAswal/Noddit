@@ -37,7 +37,7 @@ exports.createCommunity = async (req, res, next) => {
   }
   // Remove duplicates and add the creator to the list
   const mods = moderators
-    ? [...new Set(moderators.push(user?.id))]
+    ? [...new Set([...moderators, user?.id])]
     : [user?.id];
 
   const community = await Community.create({
@@ -89,11 +89,11 @@ exports.updateCommunity = async (req, res, next) => {
 
   // Remove duplicates and add the creator to the list
   const mods = moderators
-    ? [...new Set(moderators.push(user?.id))]
+    ? [...new Set([...moderators, user?.id])]
     : [user?.id];
 
   const newCommunity = await Community.updateOne(
-    { id: req.params.id },
+    { _id: req.params.id },
     {
       name,
       moderators: mods,
